@@ -1,0 +1,57 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block title %}Edit Address{% endblock %}
+
+{% block content %}
+<div style="margin-left:auto; margin-right:auto; width:60%; max-width:800px; margin-top:50px;">
+    <div style="text-align:center; margin-top:150px;">
+        <h2 style="color:orange; font-weight:bold;">Edit Address</h2>
+    </div>
+    <div class="card" style="padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+        <form method="post" name="edit_address_form" action="{% url 'userdash:edit_address' users.id %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">Name <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="name" type="text" value="{{ users.name }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">House Name <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="house_name" value="{{ users.house_name }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">Street Name <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="street_name" type="text" value="{{ users.street_name }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">Pin Number <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="pin_number" value="{{ users.pin_number }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">District <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="district" type="text" value="{{ users.district }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">State <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="state" value="{{ users.state }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">Country <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="country" type="text" value="{{ users.country }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-group col-md-6" style="margin-bottom: 20px;">
+                    <label style="font-weight:bold;">Phone Number <span class="required" style="color:red;">*</span></label>
+                    <input required class="form-control square" name="phone_number" value="{{ users.phone_number }}" style="padding: 10px; border-radius: 5px;">
+                </div>
+                <div class="form-check mb-3" style="margin-bottom: 20px; margin-left:20px;">
+                    <input type="checkbox" class="form-check-input" id="is_active" name="status" {% if users.status %}checked{% endif %} style="margin-right: 10px;">
+                    <label class="form-check-label" for="is_active" style="font-weight:bold; ">Status</label>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; ">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,55 @@
+{% extends "adminside/base.html" %}
+{% load static %}
+{% block title %}Admin createbrand{% endblock %}
+{% block content %}
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Add New Brand</h2>
+            </div>
+        </div>
+        <div style="width:900px;" class="col-lg-6">
+            <div class="card mb-4">
+            
+                <div class="card-body">
+                    <form method="post" action="{% url 'brand:brand_create' %}" enctype="multipart/form-data">
+                        {% csrf_token %} 
+                        <div class="mb-4">
+                            <label style="font-weight: bold;" for="product_name" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="brand_name" id="brand_name" required>
+                        </div>
+                        <div class="mb-4">
+                            <label style="font-weight: bold;" class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="card mb-8">
+                            
+                            <div class="card-body">
+                                <p>Brand Image</p>
+                                <div class="input-upload">
+                                 
+                                    <input class="form-control" name="brand_image" required type="file">
+                                </div>
+                            </div>
+                        </div> 
+                        <label style='padding-top:10px;' class="form-check mb-4">
+                            <input class="form-check-input" name="status" type="checkbox" value="" required>
+                            <span style="font-weight: bold;"  class="form-check-label"> Status</span>
+                        </label>
+                        <div>
+                            <button type="submit" style="font-weight: bold;" class="btn btn-md rounded font-sm hover-up">Create Brand</button>
+                        </div>  
+                    </form>
+                </div>
+            </div> 
+        </div>
+        <div class="col-lg-3">
+            
+            
+            
+        </div>
+    </div>
+</section> 
+{% endblock content %}

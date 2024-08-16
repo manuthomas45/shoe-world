@@ -1,0 +1,577 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block title %}User Dash
+        
+    {% endblock %}</title>
+
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Y4Os+Zr/jfQJ0NVbV0C5hL/T3siX6oKMX0sFbM6nX5F6e6CVW92g6sf0vb8fbxHb" crossorigin="anonymous">
+
+<style>
+    .dashboard-menu {
+        background-color: #f8f9fa; /* Light grey background */
+        border-radius: 8px; /* Rounded corners */
+        padding: 20px; /* Padding around the menu */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    }
+    
+    .dashboard-menu .nav-link {
+        color: #343a40; /* Darker text color for better contrast */
+        font-weight: 500; /* Medium weight for readability */
+        font-size: 16px; /* Slightly larger font size */
+        padding: 12px 15px; /* More padding for a comfortable click area */
+        transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+    }
+    
+    .dashboard-menu .nav-link i {
+        font-size: 18px; /* Larger icon size */
+        vertical-align: middle; /* Align icon with text */
+        margin-right: 10px; /* Space between icon and text */
+    }
+    
+    .dashboard-menu .nav-link.active {
+        background-color: orange; /* Highlight active link with primary color */
+        color: #fff; /* White text on active link */
+        border-radius: 6px; /* Round the corners of the active link */
+    }
+    
+    .dashboard-menu .nav-link:hover {
+        background-color: #e9ecef; /* Slight hover effect */
+        color: #007bff; /* Text color on hover */
+        text-decoration: none; /* Remove underline on hover */
+    }
+    .no-addresses-message {
+        font-size: 28px; /* Larger font size for visibility */
+        color: #6c757d; /* Muted text color for subtlety */
+        text-align: center; /* Center the text */
+        margin: 20px 0; /* Space above and below the text */
+        padding: 10px; /* Padding around the text */
+        font-weight: 500; /* Medium font weight */
+    }
+    
+    
+</style>
+<section class="pt-50 pb-50" style="padding-top:150px">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dashboard-menu">
+                            <ul class="nav flex-column" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false">
+                                        <i class="fi-rs-settings-sliders mr-10"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false">
+                                        <i class="fi-rs-shopping-bag mr-10"></i>Orders
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
+                                        <i class="fi-rs-marker mr-10"></i>My Address
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
+                                        <i class="fi-rs-shopping-cart-check mr-10"></i>Wallet
+                                    </a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'account:logout' %}">
+                                        <i class="fi-rs-sign-out mr-10"></i>Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="tab-content dashboard-content">
+                            <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                                <div class="card">
+                                   
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Hello {{ user.username }}! </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label>First Name<span class="required">*</span></label>
+                                                <input required class="form-control square" name="name" value="{{user.first_name}} " type="text">
+                                            </div>
+                                            
+                                            <div class="form-group col-md-6">
+                                                <label>Last Name<span class="required">*</span></label>
+                                                <input required class="form-control square" value="{{user.last_name}}" name="house_name">
+                                            </div>
+                                            
+                                            <div class="form-group col-md-6">
+                                                <label>Email<span class="required">*</span></label>
+                                                <input required class="form-control square" name="street_name" value="{{user.email}}" type="text">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>Phone Number<span class="required">*</span></label>
+                                                <input required class="form-control square" value="{{user.phone_number}}" name="pin_number">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="card-body text-center" style="padding-top:7px"> 
+                                        <div class="mb-3"> 
+                                        </div> 
+                                       
+                                        <a href="#" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editProfileModal" 
+                                                    class="btn btn-outline-secondary btn-sm mt-2" 
+                                                    style="border-color: #6c757d; color: #6c757d; transition: all 0.3s ease;"
+                                                    onmouseover="this.style.backgroundColor='#ff9800'; this.style.borderColor='#ff9800'; this.style.color='#fff';"
+                                                    onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#6c757d'; this.style.color='#6c757d';">
+                                                    Edit Profile
+                                                    </a>
+
+                                        {% comment %} <a href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal" class="btn btn-outline-secondary btn-sm mt-2" style="border-color: #6c757d; color: #6c757d; transition: all 0.3s ease;">Edit Profile</a>  {% endcomment %}
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal" class="btn btn-outline-secondary btn-sm mt-2" style="border-color: #6c757d; color: #6c757d; transition: all 0.3s ease;"
+                                        onmouseover="this.style.backgroundColor='#ff9800'; this.style.borderColor='#ff9800'; this.style.color='#fff';"
+                                        onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#6c757d'; this.style.color='#6c757d';">Change Password</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %} <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Your Orders</h5>
+                                    </div>
+                                    
+                                    <div class="card-body"> 
+                                        <div class="table-responsive"> 
+                                            <table class="table"> 
+                                                <thead> 
+                                                    <tr> 
+                                                        <th>Order ID</th> 
+                                                        <th>Address</th> 
+                                                        <th>Price</th> 
+                                                        <th style="width:100px;">Date</th> 
+                                                        <th>Status</th> 
+                                                        <th style="width:500px;">Action</th> 
+                                                    </tr> 
+                                                </thead> 
+                                                {% for order in orders %}
+                                                <tbody> 
+                                                    <tr> 
+                                                        <td> 
+                                                            {% if order_sub.variant.product.thumbnail %}
+                                                            <img src="{{ order_sub.variant.product.thumbnail.url }}"  alt="{{ order_sub.variant.product.product_name }}" style="width: 100px;"> 
+                                                            {% endif %}
+                                                            <div>Order ID:</div> 
+                                                            <div>{{ order.order_id }}</div>
+                                                        </td> 
+                                                        
+                                                        <td> 
+                                                            {{ order.address.house_name }}<br> 
+                                                            {{ order.address.district }}<br> 
+                                                            {{ order.address.state}}<br>
+                                                            {{ order.address.pin_number}} 
+                                                        </td> 
+                                                        <td>₹{{ order.total_amount }}</td> 
+                                                        <td> 
+                                                            {{ order.date }}<br>
+                                                        </td>
+                                                        <td><span {% if order.order_status == "Order Placed" %} class="badge bg-success" {% elif order.order_status == "Confirmed" %} class="badge bg-warning" {% elif order.order_status == "Shipped" %} class="badge bg-primary" {% else %}class="badge bg-danger" {% endif %}>{{ order.order_status }}</span></td> 
+                                                        <td >
+                                                            <div>
+                                                                {% if order.order_status == "Confirmed" or order.order_status == "Awaiting Payment" or order.order_status == "Shipped" %}
+                                                                <form id="cancel-order-form" method="post" action="{% url 'order:cancel_order' order.id %}">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="badge bg-danger no-outline" style="height: 25px; width: 100px; padding: 0; text-align: center; display: flex; align-items: center; justify-content: center;">
+                                                                        Cancel Order
+                                                                    </button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div style="margin-top:10px;">
+                                                                {% if order.order_status == "Order Placed" %}
+                                                                <form id="return-order-form" method="post" action="{% url 'order:return_order' order.id %}">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="badge bg-danger no-outline" style="height: 25px; width: 100px; padding: 0; text-align: center; display: flex; align-items: center; justify-content: center;">
+                                                                        Return Order
+                                                                    </button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </div>
+                                                            
+                                                            <div style="margin-top:10px; margin-bottom:10px;">
+                                                                <button class="btn btn-danger btn-sm collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ order.id }}" aria-expanded="false" aria-controls="orderDetails{{ order.id }}">
+                                                                    Details
+                                                                </button>
+                                                            </div>
+                                                            <a style="padding-top:20;" href="{% url 'user_panel:invoice_download' order.id %}" class="btn btn-danger btn-sm collapse-btn">Invoice Download</a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" class="p-0">
+                                                            <div class="collapse order-details" id="orderDetails{{ order.id }}">
+                                                                <div class="card card-body">
+                                                                    {% for item in order.ordersub_set.all %}
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-md-3">
+                                                                            <img src="{{ item.variant.product.thumbnail.url }}" alt="{{ item.variant.product.product_name }}" class="img-fluid rounded">
+                                                                        </div>
+                                                                        <div class="col-md-9">
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <h5 class="card-title">{{ item.variant.product.product_name }}</h5>
+                                                                                    <p class="card-text">
+                                                                                        Quantity: {{ item.quantity }}<br>
+                                                                                        Size: {{ item.variant.size }}<br>
+                                                                                        Price: ₹{{ item.price }}
+                                                                                    </p>
+                                                                                    {% if item.main_order.order_status == "Order Placed" %}
+                                                                                    <a href="{% url 'order:individual_cancel' item.variant.id %}" class="btn btn-danger btn-sm collapse-btn">Return</a>
+                                                                                    {% else %}
+                                                                                    <a href="{% url 'order:individual_cancel' item.variant.id %}" class="btn btn-danger btn-sm collapse-btn">Cancel</a>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <h5 class="card-title">Delivery Address</h5>
+                                                                                    <p class="card-text">
+                                                                                        Name: {{ item.main_order.address.name }}<br>
+                                                                                        House Name: {{ item.main_order.address.house_name }}<br>
+                                                                                        Size: {{ item.variant.size }}<br>
+                                                                                        Price: ₹{{ item.variant.product.offer_price }}<br>
+                                                                                    </p>
+                                                                                </div>
+                                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody> 
+                                                {% endfor %}
+                                            </table> 
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> {% endcomment %}
+                            
+                            <!-- Include Bootstrap JS for collapse functionality -->
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+                            {% comment %} <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                                        <h5 class="mb-0 text-danger font-weight-bold">Wallet</h5>
+                                        <h4 class="mb-0 font-weight-bold">Balance: <span class="text-danger">₹{{ balance }}</span></h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover ">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Transaction Type</th>
+                                                        <th scope="col">Amount</th>
+                                                        <th style="width:100px;" scope="col">Date</th>
+                                                        <th scope="col">Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in transactions %}
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge {% if item.transaction_type == 'Credited' %}badge-success{% else %}badge-danger{% endif %} px-2 py-1">
+                                                                {{ item.transaction_type }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="font-weight-bold {% if item.transaction_type == 'Credited' %}text-success{% else %}text-danger{% endif %}">
+                                                            ₹{{ item.amount }}
+                                                        </td>
+                                                        <td>{{ item.date|date:"M d, Y" }}</td>
+                                                        <td>{{ item.description }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  {% endcomment %}
+                            <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha384-AZmUrrcblNZ2b+knNNXh9vdP6aBIeNpCw7wO4gMopCuRYVaywwPKm1JZ5n7ScI7k" crossorigin="anonymous"></script>
+                            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                <button type="button" class="btn mb-2" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                    Add Address
+                                </button>
+                                <div class="row">
+                                    {% for address in user_address %}
+                                    <div class="col-lg-6">
+                                    
+                                        <div class="card mb-3 mb-lg-0">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">{{ address.name }}</h5>
+                                                <a href="#" style="color:red;" class="btn-small">
+                                                    {% comment %} {% if address.status %}
+                                                        Default
+                                                    {% else %}
+                                                        Make as Default
+                                                    {% endif %} {% endcomment %}
+                                                </a>
+                                            </div>
+                                            <div class="card-body">
+                                                <address>
+                                                    {{ address.house_name }} <br>
+                                                    {{ address.street_name }} <br>
+                                                    {{ address.pin_number }} <br>
+                                                    {{ address.district }} <br>
+                                                    {{ address.state }} <br>
+                                                    {{ address.phone_number }} <br>
+                                                    {{ address.country }}
+                                                </address>
+                                             
+                                                <div class="d-flex justify-content-end align-items-center gap-2">
+                                                    <button type="button" class="btn btn-warning" style="margin-right: 8px;">
+                                                        <a href="{% url 'userdash:edit_address' address.id %}" style="color: white; text-decoration: none;">
+                                                            Edit
+                                                        </a>
+                                                    </button>
+                                                    
+                                                
+                                                    <form action="{% url 'userdash:delete_address' address.id %}" method="post" style="margin: 0;">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger" style="padding: 0.375rem 0.75rem; border: none;">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    {% empty %}
+                                    <p class="no-addresses-message">No addresses found.</p>
+                                    {% endfor %}
+                                    
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
+                <button type="button" class="lnr lnr-cross" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+            </div>
+           
+            <div class="modal-body">
+                <form method="post" name="edit_address_form" action="{% url 'userdash:create_address' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">Name <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="name" type="text" value="{{ users.name }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">House Name <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="house_name" value="{{ users.house_name }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">Street Name <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="street_name" type="text" value="{{ users.street_name }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">Pin Number <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="pin_number" value="{{ users.pin_number }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">District <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="district" type="text" value="{{ users.district }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">State <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="state" value="{{ users.state }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">Country <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="country" type="text" value="{{ users.country }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div class="form-group col-md-6" style="margin-bottom: 1rem;">
+                            <label style="font-weight: bold;">Phone Number <span style="color: red;">*</span></label>
+                            <input required class="form-control square" name="phone_number" value="{{ users.phone_number }}" style="padding: 0.5rem; border-radius: 5px;">
+                        </div>
+                        <div style="margin-left:20px;">
+                        <div class="form-check mb-3 col-md-12" style="margin-bottom: 1rem;">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="status" {% if users.status %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">Status</label>
+                        </div>
+                        </div>
+                        <div class="col-md-12" >
+                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit" style="background-color: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 5px;">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+{% comment %} <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+          <button type="button" class="lnr lnr-cross" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="{% url 'userdash:edit_details' user.id %}">
+              {% csrf_token %}
+
+              <div class="row">
+                  <div class="form-group col-md-6">
+                      <label>First Name<span class="required">*</span></label>
+                      <input required class="form-control square" name="first_name" value="{{ user.first_name }}" type="text">
+                  </div>
+                  <div class="form-group col-md-6">
+                      <label>Last Name<span class="required">*</span></label>
+                      <input required class="form-control square" value="{{ user.last_name }}" name="last_name">
+                  </div>
+                  <div class="form-group col-md-6">
+                      <label>Email<span class="required">*</span></label>
+                      <input required class="form-control square" name="email" value="{{ user.email }}" type="text">
+                  </div>
+                  <div class="form-group col-md-6">
+                      <label>Phone Number<span class="required">*</span></label>
+                      <input required class="form-control square" value="{{ user.phone_number }}" name="phone_number">
+                  </div>
+                  <div class="col-md-12 mt-2">
+                      <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                  </div>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div> {% endcomment %}
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="lnr lnr-cross" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'userdash:edit_details' user.id %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="firstName">First Name <span class="required">*</span></label>
+                            <input required class="form-control" name="first_name" id="firstName" value="{{ user.first_name }}" type="text" placeholder="Enter your first name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="lastName">Last Name <span class="required">*</span></label>
+                            <input required class="form-control" name="last_name" id="lastName" value="{{ user.last_name }}" type="text" placeholder="Enter your last name">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="form-group col-md-6">
+                            <label for="email">Email <span class="required">*</span></label>
+                            <input required class="form-control" name="email" id="email" value="{{ user.email }}" type="email" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+                            <input required class="form-control" name="phone_number" id="phoneNumber" value="{{ user.phone_number }}" type="tel" placeholder="Enter your phone number">
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+  
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="lnr lnr-cross" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-left: 0; width: 100%;">
+                        <div class="card-body">
+                            <form method="post" name="edit_address_form" action="{% url 'userdash:change_password' %}">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="form-group col-md-12">
+                                        <label for="oldPassword">Old Password <span class="required">*</span></label>
+                                        <input required class="form-control square" name="old_password" id="oldPassword" type="password">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="form-group col-md-12">
+                                        <label for="newPassword">New Password <span class="required">*</span></label>
+                                        <input required class="form-control square" name="new_password" id="newPassword" type="password">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="form-group col-md-12">
+                                        <label for="confirmNewPassword">Confirm New Password <span class="required">*</span></label>
+                                        <input required class="form-control square" name="confirm_new_password" id="confirmNewPassword" type="password">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary btn-lg" name="submit" value="Submit">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha384-AZmUrrcblNZ2b+knNNXh9vdP6aBIeNpCw7wO4gMopCuRYVaywwPKm1JZ5n7ScI7k" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+    {% if messages %}
+        const messages = [
+            {% for message in messages %}
+                "{{ message }}",
+            {% endfor %}
+        ];
+        messages.forEach(message => {
+            Swal.fire({
+                toast: true,
+                position: 'top-right',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+    {% endif %}
+});
+</script>
+{% endblock content%}

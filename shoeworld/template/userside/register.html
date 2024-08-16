@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 30px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .register-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            margin: 20px;
+            padding: 45px;
+        }
+
+        .heading_s1 h3 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .form-errors {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .divider-text-center {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .divider-text-center span {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #ddd;
+            position: relative;
+        }
+
+        .divider-text-center span::before {
+            content: "or";
+            background: #fff;
+            padding: 0 10px;
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            transform: translateX(-50%);
+            color: #555;
+            font-weight: 500;
+        }
+
+        .text-muted {
+            color: #6c757d;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .text-muted a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .text-muted a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 20px;
+            }
+
+            .heading_s1 h3 {
+                font-size: 1.25em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <div class="heading_s1">
+        <h3>Create an Account</h3>
+    </div>
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+            {% for error in form.first_name.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+            {% for error in form.last_name.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% for error in form.email.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.phone_number.label_tag }}
+            {{ form.phone_number }}
+            {% for error in form.phone_number.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% for error in form.password.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.confirm_password.label_tag }}
+            {{ form.confirm_password }}
+            {% for error in form.confirm_password.errors %}
+                <div class="form-errors">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group center">
+            <button type="submit" class="btn">Register</button>
+        </div>
+    </form>
+
+    <div class="divider-text-center">
+        <span></span>
+    </div>
+
+    <div class="text-muted">Already have an account? <a href="{% url 'account:user_login' %}">Login now</a></div> 
+</div>
+
+</body>
+</html>

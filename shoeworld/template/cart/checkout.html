@@ -1,0 +1,127 @@
+{% extends 'userside/base.html' %}
+{% load static %}
+{% block title %}checkout{% endblock title%}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<section class="checkout_area section_gap" style="margin-top:90px;">
+    <form method="post" action="{% url 'order:place_order' %}">
+    <div class="container">
+        <div class="billing_details">
+            <div class="row">
+                <!-- Left Column: Billing Details -->
+                <div class="col-lg-8">
+                        <h3>Billing Details</h3>
+                        <div class="col-md-5 form-group p_star">
+                            <strong><label for="first">First Name</label></strong>
+                            <input type="text" class="form-control" id="first" name="name" value="{{request.user.first_name}}">
+                        </div>
+                        <div class="col-md-5 form-group p_star">
+                            <strong><label for="last">Last Name</label></strong>
+                            <input type="text" class="form-control" id="last" name="name" value="{{request.user.last_name}}">
+                        </div>
+                        <div class="col-md-5 form-group p_star">
+                            <strong><label for="number">Phone no:</label></strong>
+                            <input type="text" class="form-control" id="number" name="number" value="{{request.user.phone_number}}">
+                        </div>
+                        <div class="col-md-5 form-group p_star">
+                            <strong><label for="email">Email</label></strong>
+                            <input type="text" class="form-control" id="email" name="email" value="{{request.user.email}}">
+                        </div>
+                        
+                      
+                                                <!-- Address Section -->
+                        <div class="col-12">
+                            <h3>Select Delivery Address</h3>
+                        </div>
+                        <div class="row address-selection" style="padding-top:20px;">
+                            {% for address in user_address %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}">
+                                            <label class="form-check-label" for="address_{{ address.id }}">
+                                                <strong>{{ address.name }}</strong><br>
+                                                {{ address.house_name }},<br> {{ address.street_name }}<br>
+                                                {{ address.district }}, {{ address.state }} <br>{{ address.pin_number }}<br>
+                                                {{ address.country }}<br>
+                                                Phone: {{ address.phone_number }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-12 form-group mt-3">
+                            <a class="btn btn-warning btn-block" href="{% url 'userdash:create_address' %}">Add New Address</a>
+                        </div>
+                        
+                        <!-- Additional Form Fields -->
+                       
+                    
+                </div>
+        
+                <!-- Right Column: Order Summary -->
+                <div class="col-lg-4">
+                    <div class="order_box">
+                        <h2>Your Orders</h2>
+                        <ul class="list">
+                            <li><a href="">Product <span>Total</span></a></li>
+                            {% for item in cart_items %}
+                            <li><a href="">{{item.product.product_name}}  <span class="last">₹{{item.total}}</span></a></li>
+                            {% endfor %}
+                           
+                        </ul>
+                        <ul class="list list_2">
+                            <li><a href="">Grand total <span>₹{{cart_total}}</span></a></li>
+                            <li>.</li>
+                            <li></li>
+                           
+                        </ul>
+                        <ul >
+                            {% csrf_token %}
+                            <h5 class="mb-3">Payment Method</h5>
+                            <div class="mb-3">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_option" value="Cash On Delivery" id="Cash On Delivery" checked />
+                                    <label class="form-check-label" for="Cash On Delivery">Cash On Delivery</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_option" value="Wallet" id="Wallet" />
+                                    <label class="form-check-label" for="Wallet">Wallet </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment_option" value="Online Payment" id="Online Payment" />
+                                    <label class="form-check-label" for="Online Payment">Online Payment</label>    <img src="{% static 'userside/assets/img/product/card.jpg' %}" alt="" style="margin-left:50px;">
+
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 mt-3">Place Order</button>
+                            <br>
+                        </ul>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Check if there are any messages
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}",
+                    title: "{{ message|escapejs }}",
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock content%}
