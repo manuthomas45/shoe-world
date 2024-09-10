@@ -3,7 +3,10 @@ from django.contrib.auth import authenticate, login ,logout
 from django.contrib import messages
 from account.models import User
 from utils.admindecorator import admin_required
-
+from django.utils import timezone
+from order.models import  *
+from django.db.models import Sum,Count
+from datetime import datetime
 
 
 
@@ -54,3 +57,73 @@ def adminpanel(request):
 def admin_logout(request):
     logout(request)
     return redirect('admin_login') 
+
+
+@admin_required
+def sales_report(request):
+    filter_type = request.GET.get('filter', None)
+    now = timezone.now()
+    start_date = end_date = None  # Initialize to None
+
+    if filter_type == 'weekly':
+        start_date = now - timedelta(days=now.weekday())
+        end_date = now
+    elif filter_type == 'monthly':
+        start_date = now.replace(day=1)
+        end_date = now
+
+    # Filter orders based on whether a date range is defined
+    if start_date and end_date:
+        orders = OrderMain.objects.filter(
+            order_status="Delivered",
+            is_active=True,
+            date__range=[start_date, end_date]
+        )
+    else:
+        # No specific filter, show all "Order Placed" orders
+        orders = OrderMain.objects.filter(
+            order_status="Delivered",
+            is_active=True
+        )
+
+    total_discount = orders.aggregate(total=Sum('discount_amount'))['total']
+    total_orders = orders.aggregate(total=Count('id'))['total']
+    total_order_amount = orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+    return render(request, 'adminside/salesreport.html', {
+        'orders': orders,
+        'total_discount': total_discount,
+        'total_orders': total_orders,
+        'total_order_amount': total_order_amount
+    })
+
+
+@admin_required
+def order_date_filter(request):
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        if start_date and end_date:
+            try:
+                start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            except ValueError:
+                return redirect('admin_panel:sales_report')
+
+            orders = OrderMain.objects.filter(
+                date__range=[start_date, end_date], 
+                order_status="Delivered"
+            )
+            total_discount = orders.aggregate(total=Sum('discount_amount'))['total']
+            total_orders = orders.aggregate(total=Count('id'))['total']
+            total_order_amount = orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+            return render(request, 'adminside/salesreport.html', {
+                'orders': orders,
+                'total_discount': total_discount,
+                'total_orders': total_orders,
+                'total_order_amount': total_order_amount
+            })
+
+    return redirect('sales_report')

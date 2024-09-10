@@ -67,7 +67,7 @@ def register(request):
                 return redirect('account:verify_otp')
             except Exception as e:
                 print(f"Error sending email: {e}")
-                messages.error(request, 'Error sending OTP. Please try again.')
+                messages.error(request, 'Enter a valid email ID')
         else:
             print("Form is not valid")
             print(form.errors)
@@ -163,66 +163,46 @@ def single_product(request,pk):
     return render(request,'userside/single_product.html',{'products':product,'images':image,'category':category,'brand':brand,'variants':variants,'reviews':reviews})
 
 
-# def shop(request):
-#     products=Products.objects.all()
-#     return render(request,'userside/shop.html',{'products':products})
-
-
 
 def shop(request):
-    # category_slug = request.GET.get('category', '')
-    brand_slug = request.GET.get('brand', '')
-    # sort_by = request.GET.get('sort_by', '')
-    # price_range = request.GET.get('price_range', '')
     search_query = request.GET.get('search', '')
-
+    
+    selected_category = request.GET.get('category')
+    selected_brand = request.GET.get('brand')
+    
+    sort_option = request.GET.get('sort', '')
+    
     products = Products.objects.all()
-
     if search_query:
         products = products.filter(product_name__icontains=search_query)
     
-    # if category_slug:
-    #     products = products.filter(product_category__slug=category_slug)
-
-    if brand_slug:
-        products = products.filter(product_brand__brand_name=brand_slug)
-
-    # products = products.annotate(avg_rating=Avg('reviews__rating'))
-
-    # if sort_by == 'price_asc':
-    #     products = products.order_by('offer_price')
-    # elif sort_by == 'price_desc':
-    #     products = products.order_by('-offer_price')
-    # elif sort_by == 'release_date':
-    #     products = products.order_by('-release_date')
-    # elif sort_by == 'avg_rating':
-    #     products = products.order_by('-avg_rating')
-    # else:
-    #     products = products.order_by('id')
-
-    # if price_range == '2000-3000':
-    #     products = products.filter(offer_price__gte=2000, offer_price__lt=3000)
-    # elif price_range == '3000-4000':
-    #     products = products.filter(offer_price__gte=3000, offer_price__lt=4000)
-    # elif price_range == '4000-5000':
-    #     products = products.filter(offer_price__gte=4000, offer_price__lt=5000)
-    # elif price_range == 'above_5000':
-    #     products = products.filter(offer_price__gte=5000)
-    # elif price_range == 'all':
-    #     products = products  # No filtering for 'all'
+    if selected_category and selected_category != 'all' and selected_category.isdigit():
+        products = products.filter(product_category__id=selected_category)
     
-    # categories = Category.objects.filter(is_deleted=False)
-    # brands = Brand.objects.filter(status=True)
+    if selected_brand and selected_brand != 'all' and selected_brand.isdigit():
+        products = products.filter(product_brand__id=selected_brand)
+    
+    if sort_option == 'low-high':
+        products = products.order_by('price')
+    elif sort_option == 'high-low':
+        products = products.order_by('-price')
+    elif sort_option == 'a-z':
+        products = products.order_by('product_name')
+    elif sort_option == 'z-a':
+        products = products.order_by('-product_name')
+    
+    categories = Category.objects.filter(is_deleted=False)
+    brands = Brand.objects.all()
     
     context = {
         'products': products,
-        # 'categories': categories,
-        # 'brands': brands,
-        # 'current_category': category_slug,
-        # 'current_sort_by': sort_by,
-        # 'search_query': search_query,
-        # 'current_brand': brand_slug,
+        'categories': categories,
+        'brands': brands,
+        'selected_category': selected_category,
+        'selected_brand': selected_brand,
+        'sort_option': sort_option,
     }
+    
     return render(request, 'userside/shop.html', context)
 
 

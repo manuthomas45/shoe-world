@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from .models import  *
+from product.models import  *
 from categoryy.models import Category
 from brand.models import Brand
 from utils.admindecorator import admin_required
@@ -92,6 +92,8 @@ def product_edit(request, pk):
         product_brand_id = request.POST.get('product_brand')
         product.price = request.POST.get('price')
         product.offer_price = request.POST.get('offer_price')
+        if request.FILES.get('thumbnail'):
+            product.thumbnail = request.FILES['thumbnail'] 
         product.is_active = 'is_active' in request.POST 
 
 

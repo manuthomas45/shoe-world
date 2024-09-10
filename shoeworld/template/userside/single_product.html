@@ -1,21 +1,8 @@
-<!DOCTYPE html>
+{% extends 'userside/base.html' %}
 {% load static %}
-<html lang="zxx" class="no-js">
+{% block title %}product details{% endblock title%}
+{% block content %}
 
-<head>
-	<!-- Mobile Specific Meta -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- Favicon-->
-	<link rel="shortcut icon" href="img/fav.png">
-	<!-- Author Meta -->
-	<meta name="author" content="CodePixar">
-	<!-- Meta Description -->
-	<meta name="description" content="">
-	<!-- Meta Keyword -->
-	<meta name="keywords" content="">
-	<!-- meta character set -->
-	<meta charset="UTF-8">
-	<!-- Site Title -->
 	<style>
 		.variant-box.selected {
 			background-color: orange;  /* Active background color */
@@ -114,120 +101,26 @@
 			}
 			
 	</style>
-	<title>Product details</title>
-	<!--
-			CSS
-			============================================= -->
-	<link rel="stylesheet" href="{% static 'userside/assets/css/linearicons.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/font-awesome.min.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/themify-icons.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/bootstrap.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/owl.carousel.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/nice-select.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/nouislider.min.css' %}">
-	<link rel="stylesheet" href="{% static 'userside/assets/css/ion.rangeSlider.css' %}" />
-	<link rel="stylesheet" href="{% static 'userside/assets/css/ion.rangeSlider.skinFlat.css' %}" />
-	<link rel="stylesheet" href="{% static 'userside/assets/css/main.css' %}">
 	
-
-</head>
-
-<body>
-
-	<!-- Start Header Area -->
-	<div id="undefined-sticky-wrapper" class="sticky-wrapper" style="height: 80px;">
-		<header class="header_area sticky-header">
-			<div class="main_menu">
-				<nav class="navbar navbar-expand-lg navbar-light main_box">
-					<div class="container">
-						<!-- Brand and toggle get grouped for better mobile display -->
-						 <h1 style="color:orange">Shoe World</h1>
-						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-						 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</button>
-						<!-- Collect the nav links, forms, and other content for toggling -->
-						<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-							<ul class="nav navbar-nav menu_nav ml-auto">
-								<li class="nav-item active"><a class="nav-link" href="{% url 'account:user_home' %}">Home</a></li>
-								<li class="nav-item submenu dropdown">
-									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-									 aria-expanded="false">Shop</a>
-									<ul class="dropdown-menu">
-										<li class="nav-item"><a class="nav-link" href="category.html">Shop Category</a></li>
-										<li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-										<li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-										<li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
-										<li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
-									</ul>
-								</li>
-								
-						
-								<li class="nav-item submenu dropdown">
-									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-									 aria-expanded="false">Pages</a>
-									<ul class="dropdown-menu">
-										<li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-										<li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
-										<li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li>
-									</ul>
-								</li>
-								<li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-								<li class="nav-item">
-									{% if not user.is_authenticated %}
-									<a href="{% url 'account:user_login' %}" class="nav-link "  role="button" aria-haspopup="true"
-									 aria-expanded="false">Login</a>
-									
-								</li>
-								{% else %}
-								<a href="{% url 'account:logout' %}" class="nav-link "  role="button" aria-haspopup="true"
-									 aria-expanded="false">Logout</a>
-									
-								</li>
-								{% endif %}
-							</ul>
-							<ul class="nav navbar-nav navbar-right">
-								
-								<li class="nav-item">
-									<a href="{% url 'userdash:dashboard' %}"><button class="search"><span class="lnr lnr-user" id="profile"></span></button></a>
-								</li>
-								<li class="nav-item">
-									<a href=""><button class="search"><span class="ti-bag" id="search"></span></button></a>
-								</li>
-	
-								
-							</ul>
-						</div>
-					</div>
-				</nav>
-			</div>
-			
-			
-		</header>
-	</div>
-	<!-- End Header Area -->
 
 	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb">
+
+	<!-- End Banner Area -->
+	<section class="banner-area organic-breadcrumb" style="height:180px;">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
 				<div class="col-first">
-					<h1>Product Details Page</h1>
-					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
-						<a href="single-product.html">product-details</a>
+					<h1></h1>
+					<nav class="d-flex ">
+					  {% comment %} <a href="">Home<span class="lnr lnr-arrow-right"></span></a> {% endcomment %}
+						{% comment %} <a href="">Cart</a>  {% endcomment %}
 					</nav>
 				</div>
 			</div>
 		</div>
 	</section>
-	<!-- End Banner Area -->
-
 	<!--================Single Product Area =================-->
-	<div class="product_image_area">
+	<div class="product_image_area" style="margin-top:-100px;">
 		<div class="container">
 			<div class="row s_product_inner">
 				
@@ -270,11 +163,14 @@
 			
 <div class="col-lg-5 offset-lg-1">
     <div class="s_product_text">
-        <h3>{{ products.name }}</h3>
+        <h3>{{ products.product_name }}</h3>
         <div class="price-container">
             <h2>₹{{ products.offer_price }}</h2>
             <h4 class="l-through">₹{{ products.price }}</h4>
         </div>
+		<div>
+			<h4 style="color:orange;">Product Discount : {{products.percentage_discount}}%</h4>
+		</div>
         <ul class="list">
             {% if not products.is_active %}
             <li>
@@ -317,9 +213,14 @@
         <br>
         <div class="card_area d-flex align-items-center">
             <a class="primary-btn" href="#" id="addToCartBtn">Add to Cart</a>
+			<a class="icon_btn" href="#" id="addToWishlistBtn">
+				<i class="lnr lnr-heart"></i>
+			</a>
+			
+
         </div>
-        <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-        <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+        {% comment %} <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+        <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a> {% endcomment %}
     </div>
 </div>
 			</div>
@@ -1125,11 +1026,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 </script>
+<script>
+	const csrfToken = '{{ csrf_token }}';
+ </script>
 
+<script>
+	document.querySelector('.icon_btn').addEventListener('click', function (e) {
+		e.preventDefault(); // Prevent default anchor click behavior
+	
+		// Get the selected variant ID from the hidden input field
+		var variantId = document.getElementById('selectedVariantInput').value;
+	
+		// Send the variant ID to the Django view using fetch
+		fetch("{% url 'userdash:add_wishlist' %}", {
+			method: 'POST',
+			headers: {
+				'X-CSRFToken': csrfToken, // Include the CSRF token for security
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ variant_id: variantId }) // Send the variant ID as a JSON object
+		})
+		.then(response => response.json()) // Parse the JSON response
+		.then(data => {
+			if (data.status === 'success') {
+				Swal.fire({
+					position: 'top-right',
+					icon: 'success',
+					title: data.message,
+					showConfirmButton: false,
+					timer: 3000 // Duration in milliseconds
+				});
+			} else if (data.status === 'exists') {
+				Swal.fire({
+					position: 'top-right',
+					icon: 'info',
+					title: data.message,
+					showConfirmButton: false, // Set the width of the toast (default is auto)
+					timer: 2000 // Duration in milliseconds
+				});
+			} else {
+				Swal.fire({
+					position: 'top-end',
+					icon: 'error',
+					title: 'There was an error adding the item to your wishlist.',
+					showConfirmButton: false,
+					timer: 2000 // Duration in milliseconds
+				});
+			}
+			
+		})
+		.catch(error => {
+			console.error('Error:', error); // Log any errors to the console
+			Swal.fire('Error', 'Something went wrong. Please try again later.', 'error'); // Show a general error alert
+		});
+	});
+	
+</script>
+{% endblock content %}
 
-
-
-
-</body>
-
-</html>

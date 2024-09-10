@@ -50,6 +50,8 @@ class OrderSub(models.Model):
     
     def final_total_cost(self):
         return self.quantity * self.price
+    
+    
 
 
 class ReturnRequest(models.Model):

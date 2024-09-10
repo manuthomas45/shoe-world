@@ -1,62 +1,45 @@
-<!DOCTYPE html>
+{% extends 'userside/base.html' %}
 {% load static %}
-<html lang="zxx" class="no-js">
-
-<head>
-    <!-- Mobile Specific Meta -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Favicon-->
-    <link rel="shortcut icon" href="img/fav.png">
-    <!-- Author Meta -->
-    <meta name="author" content="CodePixar">
-    <!-- Meta Description -->
-    <meta name="description" content="">
-    <!-- Meta Keyword -->
-    <meta name="keywords" content="">
-    <!-- meta character set -->
-    <meta charset="UTF-8">
-    <!-- Site Title -->
-    <title>cart</title>
-    <style>
-        .banner-area {
-            padding: 10px 0; /* Adjust the top and bottom padding to reduce height */
-        }
-        
-        .breadcrumb-banner {
-            padding: 10px 0; /* Reduce padding within the breadcrumb area */
-        }
-        
-        .breadcrumb-banner h1 {
-            margin-bottom: 5px; /* Adjust the margin of the heading */
-            font-size: 24px; /* Reduce the font size if necessary */
-        }
-        
-        .breadcrumb-banner nav {
-            margin-top: 5px; /* Adjust the margin for the navigation links */
-            font-size: 14px; /* Optionally reduce the font size */
-        }
-        
-    </style>
-
-    <!--
-            CSS
-            ============================================= -->
-    <link rel="stylesheet" href="{% static 'userside/assets/css/linearicons.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/owl.carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/themify-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/nice-select.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/nouislider.min.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'userside/assets/css/main.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-</head>
-
-<body>
-    <!-- Start Header Area --><!-- End Header Area --><!-- Start Banner Area --><!-- End Banner Area -->
+{% block title %}cart{% endblock title%}
+{% block content %}
+<style>
+    .banner-area {
+        padding: 20px 0px; /* Adjust the top and bottom padding to reduce height */
+    }
+    
+    .breadcrumb-banner {
+        padding: 10px 0px; /* Reduce padding within the breadcrumb area */
+    }
+    
+    .breadcrumb-banner h1 {
+        margin-bottom: 120px; /* Adjust the margin of the heading */
+    }
+    
+    .breadcrumb-banner nav {
+        margin-top: 0px; /* Adjust the margin for the navigation links */
+        font-size: 14px; /* Optionally reduce the font size */
+    }
+    
+</style>
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1></h1>
+                <nav class="d-flex ">
+                  {% comment %} <a href="">Home<span class="lnr lnr-arrow-right"></span></a> {% endcomment %}
+                    {% comment %} <a href="">Cart</a>  {% endcomment %}
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- Start Header Area -->
+     
+     <!-- End Header Area -->
+      <!-- Start Banner Area --><!-- End Banner Area -->
     <!--================Cart Area =================-->
-    <section class="cart_area">
+    <section class="cart_area" >
         <div class="container">
             <div class="cart_inner">
                 <div class="table-responsive">
@@ -84,9 +67,7 @@
                                                 <strong>Size:</strong> {{ item.variant.size }}<br>
                                                 <strong>Price:</strong> ₹{{ item.product.price }}<br>
                                                 <strong>Stock:</strong> {{ item.variant.variant_stock }}<br>
-                                                <div style="text-align:left; margin-left:300px; margin-right:-350px">
-                                                    <a href="javascript:void(0);" onclick="confirmDelete('{% url 'cart:cart_item_delete' item.id %}')" class="btn btn-danger text ml-2">Cancel</a>
-                                                </div>
+                                                
                                             </p>
                                         </div>
                                     </div>
@@ -108,6 +89,11 @@
                                 </td>
                                 <td>
                                     <h5 id="item-total-{{ item.id }}">₹{{ item.total }}</h5>
+                                </td>
+                                <td>
+                                    <div >
+                                        <a href="javascript:void(0);" onclick="confirmDelete('{% url 'cart:cart_item_delete' item.id %}')" class="btn btn-danger text ml-2">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -142,41 +128,7 @@
         </div>
     </section>
     <!--================End Cart Area =================-->
-    {% comment %} <tr class="shipping_area">
-                                <td>
-
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <h5>Shipping</h5>
-                                </td>
-                                <td>
-                                    <div class="shipping_box">
-                                        <ul class="list">
-                                            <li><a href="#">Flat Rate: $5.00</a></li>
-                                            <li><a href="#">Free Shipping</a></li>
-                                            <li><a href="#">Flat Rate: $10.00</a></li>
-                                            <li class="active"><a href="#">Local Delivery: $2.00</a></li>
-                                        </ul>
-                                        <h6>Calculate Shipping <i class="fa fa-caret-down" aria-hidden="true"></i></h6>
-                                        <select class="shipping_select">
-                                            <option value="1">Bangladesh</option>
-                                            <option value="2">India</option>
-                                            <option value="4">Pakistan</option>
-                                        </select>
-                                        <select class="shipping_select">
-                                            <option value="1">Select a State</option>
-                                            <option value="2">Select a State</option>
-                                            <option value="4">Select a State</option>
-                                        </select>
-                                        <input type="text" placeholder="Postcode/Zipcode">
-                                        <a class="gray_btn" href="#">Update Details</a>
-                                    </div>
-                                </td>
-                            </tr> {% endcomment %}
-    <!-- start footer Area -->
+  
    
     <!-- End footer Area -->
 
@@ -339,10 +291,4 @@
         });
     }
 </script>
-
-
-
-        
-</body>
-
-</html>
+{% endblock content %}

@@ -1,0 +1,176 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block title %}Edit Address{% endblock %}
+
+{% block content %}
+<style>
+  
+</style>
+<section class="banner-area organic-breadcrumb" style="height:120px;">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1></h1>
+                <nav class="d-flex ">
+                  {% comment %} <a href="">Home<span class="lnr lnr-arrow-right"></span></a> {% endcomment %}
+                    {% comment %} <a href="">Cart</a>  {% endcomment %}
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="cart_area" style="margin-top:0px;">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                {% if wishlists %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Offer Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for wishlist in wishlists %}
+                        <div id="wishlist-item-{{ item.variant.id }}" class="wishlist-item">
+                        <tr>
+                            <td>
+                                <div id="wishlist-item-{{ wishlist.id }}" class="wishlist-item">
+
+                                <div class="media">
+                                    <div class="d-flex">
+                                        <img src="{{ wishlist.variant.product.thumbnail.url }}" alt=""style="height:150px; width:150px;">
+                                    </div>
+                                    <div class="media-body">
+                                        
+                                        <p>
+                                            <strong>Product Name:</strong> {{ wishlist.variant.product.product_name }}<br>
+                                               
+                                                <strong>Stock:</strong> {{ wishlist.variant.variant_stock }}<br>
+                                               
+                                                
+                                                
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            </td>
+                            <td>
+                                <h5> {{wishlist.variant.size }}</h5>
+                            </td>
+                            <td>
+                                <h5> {{wishlist.variant.product.price}}</h5>
+                            </td>
+                            <td style="width:40px;"><strong>
+                                {{ wishlist.variant.product.offer_price }}
+                            </strong>
+                            </td>
+                            <td>
+                                <form id="delete-form-{{ wishlist.id }}" action="{% url 'userdash:delete_wishlist_item' wishlist.id %}" id="wishlistcancel">
+                                    <button type="button" class="btn btn-danger text ml-2" onclick="confirmDelete('{{ wishlist.id }}')">Cancel</button>
+                                </form>
+                            </td>
+                           
+                        </tr>
+                    </div>
+                        {% endfor%}
+                       
+                         {% comment %} <tr class="bottom_button" style="text-align:left;">
+                            <td>
+                                
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                               
+                            </td>
+                        </tr>
+                        <tr class="shipping_area">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                              
+                            </td>
+                            <td>
+                               
+                            </td>
+                        </tr> {% endcomment %}
+                        <tr class="out_button_area">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <div class="checkout_btn_inner d-flex " style="margin-left:0px;">
+                                 {% comment %} <a  " class="gray_btn" href="{% url 'account:shop' %}">Continue Shopping</a> {% endcomment %}
+                                    <a class="primary-btn" href="{% url 'account:shop' %}">Continue Shopping</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% else %}
+                        <div class="">
+                            <img src="" alt="" class="img-fluid">
+                            <h1 style="text-align:center;">No item in wishlist </h1>
+                            <div style="text-align:center;">
+                                <a href="{% url 'account:shop' %}" class="btn btn-sm btn-outline-danger position-absolute top-50 start-50 translate-middle">Shop Now</a>
+                            </div>
+                        </div>
+                        {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(wishlistId) {
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form to delete the item
+                document.getElementById('delete-form-' + wishlistId).submit();
+            }
+        });
+    }
+    </script>
+{% endblock content %}

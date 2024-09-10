@@ -1,127 +1,520 @@
 {% extends 'userside/base.html' %}
 {% load static %}
-{% block title %}checkout{% endblock title%}
+{% block title %}Checkout{% endblock title %}
 {% block content %}
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+{% comment %} <style>
+     #availableCouponsModal {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        width: auto !important;
+        height: auto !important;
+    }
+    #availableCouponsModal {
+        position: fixed !important;
+        top: 10% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+    /* Customize modal header background */
+.modal-header {
+    background-color: #007bff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+}
 
-<section class="checkout_area section_gap" style="margin-top:90px;">
-    <form method="post" action="{% url 'order:place_order' %}">
+/* Style for the modal title */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Style for coupon cards */
+.card {
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for coupon details */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Button styling */
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Alert box styling for no coupons */
+.alert-info {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #0c5460;
+    font-size: 1rem;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+    
+     
+</style> {% endcomment %}
+<!-- Meta tags and other head elements -->
+ <!-- Correct Bootstrap CDN URLs -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha384-oBqDVmMz2kvwC9j/g6ZfmxC3ew5G8EvccQcH6ANL81wdN+2kaF6s8xQUW/1MwldV" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyCI8jzB+n7aeYz7nZh35i6qD+t+KA7IG8qFkB8GyuMZ68+5NSAz6I" crossorigin="anonymous"></script>
+<section class="banner-area organic-breadcrumb" style="height:120px;">
     <div class="container">
-        <div class="billing_details">
-            <div class="row">
-                <!-- Left Column: Billing Details -->
-                <div class="col-lg-8">
-                        <h3>Billing Details</h3>
-                        <div class="col-md-5 form-group p_star">
-                            <strong><label for="first">First Name</label></strong>
-                            <input type="text" class="form-control" id="first" name="name" value="{{request.user.first_name}}">
-                        </div>
-                        <div class="col-md-5 form-group p_star">
-                            <strong><label for="last">Last Name</label></strong>
-                            <input type="text" class="form-control" id="last" name="name" value="{{request.user.last_name}}">
-                        </div>
-                        <div class="col-md-5 form-group p_star">
-                            <strong><label for="number">Phone no:</label></strong>
-                            <input type="text" class="form-control" id="number" name="number" value="{{request.user.phone_number}}">
-                        </div>
-                        <div class="col-md-5 form-group p_star">
-                            <strong><label for="email">Email</label></strong>
-                            <input type="text" class="form-control" id="email" name="email" value="{{request.user.email}}">
-                        </div>
-                        
-                      
-                                                <!-- Address Section -->
-                        <div class="col-12">
-                            <h3>Select Delivery Address</h3>
-                        </div>
-                        <div class="row address-selection" style="padding-top:20px;">
-                            {% for address in user_address %}
-                            <div class="col-md-6 mb-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}">
-                                            <label class="form-check-label" for="address_{{ address.id }}">
-                                                <strong>{{ address.name }}</strong><br>
-                                                {{ address.house_name }},<br> {{ address.street_name }}<br>
-                                                {{ address.district }}, {{ address.state }} <br>{{ address.pin_number }}<br>
-                                                {{ address.country }}<br>
-                                                Phone: {{ address.phone_number }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="col-12 form-group mt-3">
-                            <a class="btn btn-warning btn-block" href="{% url 'userdash:create_address' %}">Add New Address</a>
-                        </div>
-                        
-                        <!-- Additional Form Fields -->
-                       
-                    
-                </div>
-        
-                <!-- Right Column: Order Summary -->
-                <div class="col-lg-4">
-                    <div class="order_box">
-                        <h2>Your Orders</h2>
-                        <ul class="list">
-                            <li><a href="">Product <span>Total</span></a></li>
-                            {% for item in cart_items %}
-                            <li><a href="">{{item.product.product_name}}  <span class="last">₹{{item.total}}</span></a></li>
-                            {% endfor %}
-                           
-                        </ul>
-                        <ul class="list list_2">
-                            <li><a href="">Grand total <span>₹{{cart_total}}</span></a></li>
-                            <li>.</li>
-                            <li></li>
-                           
-                        </ul>
-                        <ul >
-                            {% csrf_token %}
-                            <h5 class="mb-3">Payment Method</h5>
-                            <div class="mb-3">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_option" value="Cash On Delivery" id="Cash On Delivery" checked />
-                                    <label class="form-check-label" for="Cash On Delivery">Cash On Delivery</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_option" value="Wallet" id="Wallet" />
-                                    <label class="form-check-label" for="Wallet">Wallet </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_option" value="Online Payment" id="Online Payment" />
-                                    <label class="form-check-label" for="Online Payment">Online Payment</label>    <img src="{% static 'userside/assets/img/product/card.jpg' %}" alt="" style="margin-left:50px;">
-
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-warning w-100 mt-3">Place Order</button>
-                            <br>
-                        </ul>
-                       
-                    </div>
-                </div>
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1></h1>
+                <nav class="d-flex ">
+                  
+                </nav>
             </div>
         </div>
     </div>
-</form>
 </section>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // Check if there are any messages
-        {% if messages %}
-            {% for message in messages %}
-                Swal.fire({
-                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}",
-                    title: "{{ message|escapejs }}",
-                    timer: 3000,
-                    showConfirmButton: false,
-                });
-            {% endfor %}
-        {% endif %}
-    </script>
-{% endblock content%}
+<section class="checkout_area section_gap" style="padding:10px; ">
+    <form id="payment-form" method="post" action="{% url 'order:place_order' %}">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ razorpay_order_id }}">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+        <input type="hidden" name="selected_address" value="{{ user_address.id }}">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Billing Details Section -->
+                    <h3>Billing Details</h3>
+                    <div class="col-md-5 form-group p_star">
+                        <strong><label for="first">First Name</label></strong>
+                        <input type="text" class="form-control" id="first" name="first_name" value="{{ request.user.first_name }}" readonly>
+                    </div>
+                    <div class="col-md-5 form-group p_star">
+                        <strong><label for="last">Last Name</label></strong>
+                        <input type="text" class="form-control" id="last" name="last_name" value="{{ request.user.last_name }}" readonly> 
+                    </div>
+                    <div class="col-md-5 form-group p_star">
+                        <strong><label for="number">Phone no:</label></strong>
+                        <input type="text" class="form-control" id="number" name="phone_number" value="{{ request.user.phone_number }}" readonly>
+                    </div>
+                    <div class="col-md-5 form-group p_star">
+                        <strong><label for="email">Email</label></strong>
+                        <input type="text" class="form-control" id="email" name="email" value="{{ request.user.email }}" readonly>
+                    </div>
+
+                    <!-- Address Section -->
+                    <div class="col-12">
+                        <h3>Select Delivery Address</h3>
+                    </div>
+                    <div class="row address-selection" style="padding-top:20px;">
+                        {% if user_address %}
+                        {% for address in user_address %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}" {% if address.id == user_address.id %}checked{% endif %}>
+                                        <label class="form-check-label" for="address_{{ address.id }}">
+                                            <strong>{{ address.name }}</strong><br>
+                                            {{ address.house_name }},<br> {{ address.street_name }}<br>
+                                            {{ address.district }}, {{ address.state }} <br>{{ address.pin_number }}<br>
+                                            {{ address.country }}<br>
+                                            Phone: {{ address.phone_number }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <h3>Please create Address</h3>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12 form-group mt-3">
+                        <a class="btn btn-warning btn-block" href="{% url 'userdash:create_address' %}">Add New Address</a>
+                    </div>
+                </div>
+                {% comment %} <div class="col-lg-4">
+                    <!-- Order Summary Section -->
+                    <div class="order_box">
+                        <h2>Your Order</h2>
+                        <ul class="list">
+                            <li><a href="#">Product <span>Total</span></a></li>
+                            {% for item in cart_items %}
+                            <li><a href="#">{{ item.product.product_name }} <span class="last">₹{{ item.total }}</span></a></li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="list list_2">
+                            <li><a href="">Discount <span id="discount">₹0</span></a></li> <!-- Add this line -->
+                            <li><a href="">Discount Amount <span id="discount_amount">₹0</span></a></li> <!-- Add this line -->
+                            <li><a href="">Grand Total <span id=>₹{{ cart_total }}</span></a></li> <!-- Update this line -->
+                        </ul>
+                
+                        <!-- Payment Method Selection -->
+                        <h5 class="mb-3" style="margin-top:10px;">Payment Method</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Cash On Delivery" id="COD" checked/>
+                            <label class="form-check-label" for="COD">Cash On Delivery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Online Payment" id="OnlinePayment"/>
+                            <label class="form-check-label" for="OnlinePayment">Online Payment</label>
+                        </div>
+                        <br>
+                        <div class="btn btn-warning" style="width:100%;">
+                            <input id="couponCodeInput" style="width:90%">
+                        </div>
+                        <div style="color:black;">
+                            <a class="btn btn-warning w-100 mt-3" id="applyCouponButton">Apply Coupon</a>
+                        </div>
+                        <div style="color:black;">
+                            <a class="btn btn-warning w-100 mt-3" id="removeCouponButton" onclick="removeCoupon()">Remove Coupon</a>
+                        </div>
+                        <button type="button" class="btn btn-warning w-100 mt-3" data-toggle="modal" data-target="#exampleModalCenter">
+                            Available Coupons
+                        </button>
+                
+                        <!-- Pay Now Button -->
+                        <button type="submit" id="rzp-button1" class="btn btn-warning w-100 mt-3">Place Order</button>
+                    </div>
+                </div> {% endcomment %}
+                <div class="col-lg-4">
+                    <!-- Order Summary Section -->
+                    <div class="order_box">
+                        <h2>Your Order</h2>
+                        <ul class="list">
+                            <li><a href="#">Product <span>Total</span></a></li>
+                            {% for item in cart_items %}
+                            <li><a href="#">{{ item.product.product_name }} <span class="last">₹{{ item.total }}</span></a></li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="list list_2">
+                            <li><a href="">Discount <span id="discount">0%</span></a></li> <!-- Add this line -->
+                            <li><a href="">Discount Amount <span id="discount_amount">₹0</span></a></li> <!-- Add this line -->
+                            <li>
+                                <a href="">Grand Total 
+                                  <span id="grand_total">₹{{ cart_total }}</span>
+                                </a>
+                              </li><!-- Update this line -->
+                        </ul>
+                
+                        <!-- Payment Method Selection -->
+                        <h5 class="mb-3" style="margin-top:10px;">Payment Method</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Cash On Delivery" id="COD" checked/>
+                            <label class="form-check-label" for="COD">Cash On Delivery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Online Payment" id="OnlinePayment"/>
+                            <label class="form-check-label" for="OnlinePayment">Online Payment</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Wallet Payment" id="WalletPayment" />
+                            <label class="form-check-label" for="WalletPayment">Wallet Payment</label>
+                        </div>
+                        <br>
+                        <div class="btn btn-warning" style="width:100%;">
+                            <input id="couponCodeInput" style="width:90%">
+                        </div>
+                        <div style="color:black;">
+                            <a class="btn btn-warning w-100 mt-3" id="applyCouponButton">Apply Coupon</a>
+                        </div>
+                        <div style="color:black;">
+                            <a class="btn btn-warning w-100 mt-3" id="removeCouponButton">Remove Coupon</a>
+                        </div>
+                        <button type="button" class="btn btn-warning w-100 mt-3" data-toggle="modal" data-target="#exampleModalCenter">
+                            Available Coupons
+                        </button>
+                
+                        <!-- Pay Now Button -->
+                        <button type="submit" id="rzp-button1" class="btn btn-warning w-100 mt-3">Place Order</button>
+                    </div>
+                </div> 
+                
+                {% comment %} <div class="col-lg-4">
+                    <!-- Order Summary Section -->
+                    <div class="order_box">
+                        <h2>Your Order</h2>
+                        <ul class="list">
+                            <li><a href="#">Product <span>Total</span></a></li>
+                            {% for item in cart_items %}
+                            <li><a href="#">{{ item.product.product_name }}  <span class="last">₹{{ item.total }}</span></a></li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="list list_2">
+                            <li><a href="">Grand Total <span>₹{{ cart_total }}</span></a></li>
+                        </ul>
+
+                    
+                        <!-- Payment Method Selection -->
+                         
+                        <h5 class="mb-3" style="margin-top:10px;">Payment Method</h5>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Cash On Delivery" id="COD" checked/>
+                            <label class="form-check-label" for="COD">Cash On Delivery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_option" value="Online Payment" id="OnlinePayment"  />
+                            <label class="form-check-label" for="OnlinePayment">Online Payment</label>
+                        </div>
+                        <br>
+                        <div class="btn btn-warning" style="width:100%;">
+                            <input id="couponCodeInput" style="width:90%">
+                        </div>
+                        <div style="color:black;">
+                            <a  class="btn btn-warning w-100 mt-3">Apply Coupon</a>
+                            </div>
+                        <div style="color:black;">
+                        <a  class="btn btn-warning w-100 mt-3">Remove Coupon</a>
+                        </div>
+                        <button type="button" class="btn btn-warning w-100 mt-3" data-toggle="modal" data-target="#exampleModalCenter">
+                            Available Coupons
+                          </button>
+                          
+                        <!-- Pay Now Button -->
+                        <button type="submit" id="rzp-button1" class="btn btn-warning w-100 mt-3">Place Order</button>
+                    </div>
+                </div> {% endcomment %}
+               
+            </div>
+        </div>
+    </form>     
+</section>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Available Coupons</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    {% if coupons %}
+                        {% for coupon in coupons %}
+                            <div class="col-md-6 p-3">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body">
+                                        <h3 class="card-title text mb-3">{{ coupon.coupon_code }}</h3>
+                                        <ul class="list-unstyled mb-4">
+                                            <li><strong class="text-muted">Name:</strong> {{ coupon.coupon_name }}</li>
+                                            <li><strong class="text-muted">Minimum Amount:</strong> ₹{{ coupon.minimum_amount }}</li>
+                                            <li><strong class="text-muted">Maximum Amount:</strong> ₹{{ coupon.maximum_amount }}</li>
+                                            <li><strong class="text-muted">Discount:</strong> <span>{{ coupon.discount }}% OFF</span></li>
+                                            <li><strong class="text-muted">Expiry Date:</strong> {{ coupon.expiry_date|date:"F d, Y" }}</li>
+                                            <li><strong class="text-muted">Status:</strong> 
+                                                {% if coupon.status %}
+                                                <span>Active</span>
+                                                {% else %}
+                                                <span>Inactive</span>
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                        <button class="btn btn-outline-primary w-100" onclick="applyCoupon('{{ coupon.coupon_code }}'); event.stopPropagation(); return false;">
+                                            Copy Coupon
+                                        </button>                  
+                                     </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center p-5">
+                            <p class="text-muted">No coupons available.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Bootstrap JavaScript and Popper.js -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" defer></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" defer></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        // Setup CSRF token for AJAX requests
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Function to apply coupon
+        $('#applyCouponButton').click(function() {
+            var couponCode = $('#couponCodeInput').val();
+            $.ajax({
+                url: '{% url "coupon:apply_coupon" %}', // Update the URL to your Django view URL pattern
+                type: 'POST',
+                data: {
+                    'coupon_code': couponCode,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include the CSRF token for security
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response.new_total); // Log to check the new total value
+                        
+                        // Update the discount and total values
+                        $('#discount').text(response.discount.toFixed(2) + '%');
+                        $('#discount_amount').text('₹' + response.discount_amount.toFixed(2));
+        
+                        // Correctly update the grand total
+                        $('#grand_total').text('₹' + response.new_total.toFixed(2));
+        
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.'
+                    });
+                }
+            });
+        });
+        
+        // Function to remove coupon
+        $('#removeCouponButton').click(function() {
+            $('#couponCodeInput').val(''); // Clear the coupon input field
+            $.ajax({
+                url: '{% url "coupon:remove_coupon" %}',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}' // Include CSRF token for POST request
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log(response.new_total);
+        
+                        // Update the discount and total values
+                        $('#discount').text('₹0');
+                        $('#discount_amount').text('₹0');
+                        $('#grand_total').text('₹' + response.new_total.toFixed(2));
+        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Coupon removed successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.'
+                    });
+                }
+            });
+        });        
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function applyCoupon(couponCode) {
+        var inputField = document.getElementById('couponCodeInput');
+        inputField.value = couponCode;
+        // Prevent the modal from closing here if needed
+    }
+</script>
+
+    
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

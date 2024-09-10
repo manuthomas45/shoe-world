@@ -9,6 +9,8 @@ import json
 from cart.models import *
 from userdash.models import *
 from django.contrib import messages
+from coupon.models import Coupon
+from django.views.decorators.cache import cache_control
 
 
 @require_POST
@@ -37,8 +39,11 @@ def add_to_cart(request):
         )
 
         if not item_created:
-            cart_item.quantity += quantity
-            cart_item.save()
+            if cart_item.quantity>=5:
+                return JsonResponse({'success': False, 'message': 'You cannot add more than 5 items'}, status=404)
+            else:              
+                cart_item.quantity += quantity
+                cart_item.save()
 
         return JsonResponse({'success': True, 'message': 'Item added to cart successfully'})
 
@@ -50,9 +55,12 @@ def add_to_cart(request):
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 
-
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @login_required(login_url='/user_login/')
 def cart_list(request):
+    if request.session.get('order_placed'): 
+        del request.session['order_placed']
+
     try:
         cart = get_object_or_404(Cart, user=request.user)
         cart_item = CartItem.objects.filter(cart=cart)
@@ -79,7 +87,6 @@ def update_cart_item_quantity(request):
         cart_item.quantity = new_quantity
         cart_item.save()
 
-        # Calculate new totals
         cart = cart_item.cart
         subtotal = sum(item.total() for item in cart.cart.all())
         total = cart_item.total()
@@ -91,18 +98,23 @@ def update_cart_item_quantity(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
     
-@login_required(login_url='/user_login')
+@login_required(login_url='/user_login/')
 def cart_item_delete(request,pk):
     cart_item=CartItem.objects.filter(id=pk)
     cart_item.delete()
     return redirect('cart:cart')
 
-
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @login_required(login_url='/user_login/')
 def cart_checkout(request):
+    if request.session.get('order_placed'):
+          
+        return redirect('order:confirmation')     
     cart = Cart.objects.get(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart, is_active=True) 
-    
+    coupons = Coupon.objects.filter(status=True, expiry_date__gte=timezone.now()) 
+   
+
     for cart_item in cart_items:
         if not cart_item.variant.variant_status:
             messages.error(request, 'Variant unavailable')
@@ -116,14 +128,16 @@ def cart_checkout(request):
             messages.error(request, 'Product unavailable')
             return redirect('cart:cart')
     
+    
     cart_total = sum(item.total() for item in cart_items)
     
    
-    user_address = UserAddress.objects.filter(user=request.user.id, status=True)
+    user_address = UserAddress.objects.filter(user=request.user.id)
     
-    
+
     return render(request, 'cart/checkout.html', {
         'cart_items': cart_items,
         'cart_total': cart_total,
         'user_address': user_address,
+        'coupons':coupons,
     })

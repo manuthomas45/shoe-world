@@ -30,9 +30,8 @@ class UserRegistrationForm(forms.ModelForm):
     def clean_phone_number(self):
         phone_number = self.cleaned_data.get('phone_number')
         if phone_number:
-            phone_number = phone_number.strip()  # Strip leading and trailing whitespace
+            phone_number = phone_number.strip() 
             
-            # Ensure the phone number is exactly 10 digits
             if not re.match(r'^\d{10}$', phone_number):
                 raise ValidationError("Phone number must be exactly 10 digits.")
 
@@ -42,21 +41,17 @@ class UserRegistrationForm(forms.ModelForm):
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
         if first_name:
-            first_name = first_name.strip()  # Strip leading and trailing whitespace
+            first_name = first_name.strip() 
 
-            # Check for spaces
             if ' ' in first_name:
                 raise ValidationError("First name cannot contain spaces")
             
-            # Ensure no special characters or digits
             if not first_name.isalpha():
                 raise ValidationError("First name must contain only letters")
             
-            # Ensure minimum length
             if len(first_name) < 2:
                 raise ValidationError("First name must be at least 2 characters long")
             
-            # Ensure maximum length
             if len(first_name) > 20:
                 raise ValidationError("First name cannot be longer than 20 characters")
             

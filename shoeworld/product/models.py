@@ -18,7 +18,9 @@ class Products(models.Model):
     created_at = models.BooleanField(null=True,default=True)
     updated_at = models.BooleanField(null=True,default=True)
     
-
+    def percentage_discount(self):
+        return int(((self.price - self.offer_price) / self.price) * 100)
+    
     def __str__(self):
         return self.product_name
     

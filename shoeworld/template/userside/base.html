@@ -35,6 +35,10 @@
 	<link rel="stylesheet" href="{% static 'userside/assets/css/main.css' %}">
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Y4Os+Zr/jfQJ0NVbV0C5hL/T3siX6oKMX0sFbM6nX5F6e6CVW92g6sf0vb8fbxHb" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+
 
 </head>
 
@@ -71,7 +75,7 @@
 							</li> {% endcomment %}
 							
 					
-							<li class="nav-item submenu dropdown">
+							{% comment %} <li class="nav-item submenu dropdown">
 								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
 								 aria-expanded="false">Pages</a>
 								<ul class="dropdown-menu">
@@ -79,8 +83,8 @@
 									<li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
 									<li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li>
 								</ul>
-							</li>
-							<li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+							</li> {% endcomment %}
+							{% comment %} <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li> {% endcomment %}
 							<li class="nav-item">
 								{% if not user.is_authenticated %}
 								<a href="{% url 'account:user_login' %}" class="nav-link "  role="button" aria-haspopup="true"
@@ -99,11 +103,15 @@
 							{% comment %} <li class="nav-item profile"><a href="{% url 'userdash:dashboard' %}"><img class="" src="{% static 'userside/assets/img/banner/download.png' %}" alt="oops" style="width: 50px; height: 50px;">
 							</a></li> {% endcomment %}
 							
-							<li class="nav-item">
-								<a href="{% url 'userdash:dashboard' %}"><button class="search"><span class="lnr lnr-user" id="profile"></span></button></a>
-							</li>
+							
 							<li class="nav-item">
 								<a href="{% url 'cart:cart' %}"><button class="search"><span class="ti-bag" id="search"></span></button></a>
+							</li>
+							<li class="nav-item">
+								<a href="{% url 'userdash:wishlist' %}"><button class="search"><span class="lnr lnr-heart" id="search"></span></button></a>
+							</li>
+							<li class="nav-item">
+								<a href="{% url 'userdash:dashboard' %}"><button class="search"><span class="lnr lnr-user" id="profile"></span></button></a>
 							</li>
 
 							{% comment %} <li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span></a></li> {% endcomment %}
@@ -229,6 +237,33 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="{% static 'userside/assets/js/main.js' %}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha384-AZmUrrcblNZ2b+knNNXh9vdP6aBIeNpCw7wO4gMopCuRYVaywwPKm1JZ5n7ScI7k" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.min.js"></script>
+	<script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            {% if messages %}
+                const messages = [
+                    {% for message in messages %}
+                        {
+                            level: "{{ message.tags }}",
+                            text: "{{ message }}"
+                        },
+                    {% endfor %}
+                ];
+                messages.forEach(message => {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-right',
+                        icon: message.level === 'success' ? 'success' : 'error',
+                        title: message.text,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+            {% endif %}
+        });
+    </script>
+
 
 </body>
 
