@@ -752,4 +752,23 @@
     
 </script>
 
+<script>
+    function confirmCancel(orderId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to cancel this order?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if confirmed
+                document.getElementById('cancel-form-' + orderId).submit();
+            }
+        });
+    }
+</script>
 {% endblock content%}

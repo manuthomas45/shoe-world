@@ -322,8 +322,8 @@
                                         <h3 class="card-title text mb-3">{{ coupon.coupon_code }}</h3>
                                         <ul class="list-unstyled mb-4">
                                             <li><strong class="text-muted">Name:</strong> {{ coupon.coupon_name }}</li>
-                                            <li><strong class="text-muted">Minimum Amount:</strong> ₹{{ coupon.minimum_amount }}</li>
-                                            <li><strong class="text-muted">Maximum Amount:</strong> ₹{{ coupon.maximum_amount }}</li>
+                                            <li><strong class="text-muted">Minimum Purchase Amount:</strong> ₹{{ coupon.minimum_amount }}</li>
+                                            <li><strong class="text-muted">Maximum Discount:</strong> ₹{{ coupon.maximum_amount }}</li>
                                             <li><strong class="text-muted">Discount:</strong> <span>{{ coupon.discount }}% OFF</span></li>
                                             <li><strong class="text-muted">Expiry Date:</strong> {{ coupon.expiry_date|date:"F d, Y" }}</li>
                                             <li><strong class="text-muted">Status:</strong> 

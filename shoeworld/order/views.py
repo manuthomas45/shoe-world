@@ -21,10 +21,9 @@ from decimal import Decimal
 from wallet.models import *
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import cache_control
+from django.utils import timezone
 
 
-
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @login_required(login_url="/user_login/")
 def place_order(request):
     if request.session.get('order_placed'):
@@ -132,21 +131,21 @@ def place_order(request):
         elif payment_option == "Online Payment":
             
             coupon_code = request.session.get('applied_coupon', None)
-            discount = 0
+            # discount = 0
             final_amount = cart_total
-            discount_amount = 0
-            if coupon_code:
-                try:
-                    coupon = Coupon.objects.get(coupon_code=coupon_code)
-                    discount = coupon.maximum_amount
-                    coupon_name = coupon.coupon_name
-                    discount_amount = (cart_total * discount / 100)
-                    if discount_amount > discount:
-                        discount_amount = discount
-                    final_amount-= discount_amount
-                    # order_amount=final_amount
-                except Coupon.DoesNotExist:
-                    pass
+            # discount_amount = 0
+            # if coupon_code:
+            #     try:
+            #         coupon = Coupon.objects.get(coupon_code=coupon_code)
+            #         discount = coupon.maximum_amount
+            #         coupon_name = coupon.coupon_name
+            #         discount_amount = (cart_total * discount / 100)
+            #         if discount_amount > discount:
+            #             discount_amount = discount
+            #         final_amount-= discount_amount
+            #         # order_amount=final_amount
+            #     except Coupon.DoesNotExist:
+            #         pass
             
             client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
             order_amount = int(final_amount * 100)  
@@ -157,45 +156,45 @@ def place_order(request):
             ))
             
             razorpay_order_id = razorpay_order['id']
-            order_address = OrderAddress.objects.create(
-                name=address.name,
-                house_name=address.house_name,
-                street_name=address.street_name,
-                pin_number=address.pin_number,
-                district=address.district,
-                state=address.state,
-                country=address.country,
-                phone_number=address.phone_number
-                )
+            # order_address = OrderAddress.objects.create(
+            #     name=address.name,
+            #     house_name=address.house_name,
+            #     street_name=address.street_name,
+            #     pin_number=address.pin_number,
+            #     district=address.district,
+            #     state=address.state,
+            #     country=address.country,
+            #     phone_number=address.phone_number
+            #     )
                 
-            order_status = "Confirmed"
+            # order_status = "Confirmed"
                     
-            order_main = OrderMain.objects.create(
-                user=current_user,
-                address=order_address,
-                total_amount=cart_total,
-                final_amount=final_amount,
-                discount_amount=discount_amount,
-                payment_option=payment_option,
-                order_id=order_id,
-                order_status=order_status,
-                payment_id=payment_id,
-                payment_status=True,
-            )
+            # order_main = OrderMain.objects.create(
+            #     user=current_user,
+            #     address=order_address,
+            #     total_amount=cart_total,
+            #     final_amount=final_amount,
+            #     discount_amount=discount_amount,
+            #     payment_option=payment_option,
+            #     order_id=order_id,
+            #     order_status=order_status,
+            #     payment_id=payment_id,
+            #     payment_status=True,
+            # )
 
-            for cart_item in cart_items:
-                OrderSub.objects.create(
-                    user=current_user,
-                    main_order=order_main,
-                    variant=cart_item.variant,
-                    price=cart_item.product.offer_price,
-                    quantity=cart_item.quantity,
-                )
-                cart_item.variant.variant_stock -= cart_item.quantity
-                cart_item.variant.save()
+            # for cart_item in cart_items:
+            #     OrderSub.objects.create(
+            #         user=current_user,
+            #         main_order=order_main,
+            #         variant=cart_item.variant,
+            #         price=cart_item.product.offer_price,
+            #         quantity=cart_item.quantity,
+            #     )
+            #     cart_item.variant.variant_stock -= cart_item.quantity
+            #     cart_item.variant.save()
                 
-                cart_items.delete()
-                request.session.pop('applied_coupon', None)     
+            #     cart_items.delete()
+            #     request.session.pop('applied_coupon', None)     
             return render(request, 'cart/razorpay.html', {
                 'razorpay_key': settings.RAZORPAY_API_KEY,
                 'razorpay_order_id': razorpay_order_id,
@@ -306,7 +305,7 @@ def place_order(request):
                         return redirect('cart:cart_checkout')
             except Wallet.DoesNotExist:
                 messages.error(request, 'Wallet Does Not Exist')
-                return redirect('cart:cart_checkout')
+                return redirect('cart:checkout')
             except Exception as e:
                 messages.error(request, str(e))
                 return redirect('cart:checkout')
@@ -314,21 +313,100 @@ def place_order(request):
     return redirect('cart:checkout')
 
 
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
-@csrf_exempt
 @login_required(login_url="/user_login/")
 def complete_order(request):
+    current_user = request.user
+    cart = Cart.objects.get(user=current_user)
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+    cart_total = sum(item.total() for item in cart_items)
+    selected_address_id = request.POST.get('selected_address')
+    print(selected_address_id)
+    address = UserAddress.objects.get(id=selected_address_id, user=current_user)
+    print(address)
+    current_date_time = datetime.now()
+    formatted_date_time = current_date_time.strftime("%H%m%S%Y")
+    unique = get_random_string(length=4, allowed_chars='1234567890')
+    user = str(request.user.id)
+    order_id = user + formatted_date_time + unique
+
+    formatted_date_time = current_date_time.strftime("%m%Y%H%S")
+    unique = get_random_string(length=2, allowed_chars='1234567890')
+    payment_id = unique + user + formatted_date_time
+
     if request.session.get('order_placed'):
         return redirect('order:confirmation')
     if request.method == 'POST':
+        coupon_code = request.session.get('applied_coupon', None)
+        discount = 0
+        final_amount = cart_total
+        discount_amount = 0
+        if coupon_code:
+            try:
+                coupon = Coupon.objects.get(coupon_code=coupon_code)
+                discount = coupon.maximum_amount
+                coupon_name = coupon.coupon_name
+                discount_amount = (cart_total * discount / 100)
+                if discount_amount > discount:
+                    discount_amount = discount
+                final_amount-= discount_amount
+                # order_amount=final_amount
+            except Coupon.DoesNotExist:
+                pass
+        
+        client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+        order_amount = int(final_amount * 100)  
+        razorpay_order = client.order.create(dict(
+            amount=order_amount,
+            currency='INR',
+            payment_capture='1'
+        ))
+        
+        razorpay_order_id = razorpay_order['id']
+        order_address = OrderAddress.objects.create(
+            name=address.name,
+            house_name=address.house_name,
+            street_name=address.street_name,
+            pin_number=address.pin_number,
+            district=address.district,
+            state=address.state,
+            country=address.country,
+            phone_number=address.phone_number
+            )
+            
+        order_status = "Confirmed"
+        payment_option = "Online Payment"
+        order_main = OrderMain.objects.create(
+            user=current_user,
+            address=order_address,
+            total_amount=cart_total,
+            final_amount=final_amount,
+            discount_amount=discount_amount,
+            payment_option=payment_option,
+            order_id=order_id,
+            order_status=order_status,
+            payment_id=payment_id,
+            payment_status=True,
+        )
+
+        for cart_item in cart_items:
+            OrderSub.objects.create(
+                user=current_user,
+                main_order=order_main,
+                variant=cart_item.variant,
+                price=cart_item.product.offer_price,
+                quantity=cart_item.quantity,
+            )
+            cart_item.variant.variant_stock -= cart_item.quantity
+            cart_item.variant.save()
+            
+            cart_items.delete()
+            request.session.pop('applied_coupon', None)   
         current_user = request.user
         cart = Cart.objects.get(user=current_user)
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
 
         selected_address_id = request.POST.get('selected_address')
-        payment_option = request.POST.get('payment_option')
         cart_total = float(request.POST.get('cart_total'))
-        print(payment_option)
         
         
         if payment_option == "Online Payment":
@@ -348,7 +426,6 @@ def complete_order(request):
             except razorpay.errors.SignatureVerificationError:
                 messages.error(request, "Payment verification failed. Please try again.")
                 return redirect('cart:checkout')  
-        print ("hai")
         request.session['order_placed'] = True           
         return redirect('order:confirmation')
 
@@ -609,10 +686,6 @@ def admin_return_orders(request):
 
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from decimal import Decimal
-from django.utils import timezone
 
 def return_approval(request, pk):
     if request.method == "POST":
@@ -625,53 +698,26 @@ def return_approval(request, pk):
 
             refund_amount = Decimal('0.00')
 
-            if return_request.order_sub:
-                # Approve individual product return
-                item = return_request.order_sub
-                main_order = item.main_order
+            order = return_request.order_main
+            active_items = order.ordersub_set.filter(is_active=True)
+
+            for item in active_items:
                 item_total_cost = Decimal(str(item.final_total_cost()))
-                order_total_amount = Decimal(str(main_order.total_amount))
-                order_discount_amount = Decimal(str(main_order.discount_amount))
+                order_total_amount = Decimal(str(order.total_amount))
+                order_discount_amount = Decimal(str(order.discount_amount))
 
                 item_discount_amount = (order_discount_amount * item_total_cost) / order_total_amount
-                refund_amount = item_total_cost - item_discount_amount
+                item_refund_amount = item_total_cost - item_discount_amount
 
+                refund_amount += item_refund_amount
                 item.is_active = False
                 item.status = "Returned"
                 item.save()
 
-                order = return_request.order_main
-                order.final_amount -= refund_amount
-                order.save()
-
-                all_canceled = not main_order.ordersub_set.filter(is_active=True).exists()
-
-                if all_canceled:
-                    main_order.order_status = 'Returned'
-                    main_order.save()
-
-            else:
-                # Approve full order return
-                order = return_request.order_main
-                active_items = order.ordersub_set.filter(is_active=True)
-
-                for item in active_items:
-                    item_total_cost = Decimal(str(item.final_total_cost()))
-                    order_total_amount = Decimal(str(order.total_amount))
-                    order_discount_amount = Decimal(str(order.discount_amount))
-
-                    item_discount_amount = (order_discount_amount * item_total_cost) / order_total_amount
-                    item_refund_amount = item_total_cost - item_discount_amount
-
-                    refund_amount += item_refund_amount
-                    item.is_active = False
-                    item.status = "Returned"
-                    item.save()
-
-                order.order_status = 'Returned'
-                order.is_active = False
-                order.final_amount -= refund_amount
-                order.save()
+            order.order_status = 'Returned'
+            order.is_active = False
+            order.final_amount -= refund_amount
+            order.save()
 
             # Handle refund to wallet if applicable
             if refund_amount > 0 and return_request.order_main.payment_status:
