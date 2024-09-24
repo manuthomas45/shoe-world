@@ -56,7 +56,7 @@
         <div class="card-body">
             <!-- Summary Section -->
            <!-- Summary Section -->
-<div class="mb-4">
+{% comment %} <div class="mb-4">
     <div class="row">
         <div class="col-md-4">
             <div class="card bg-light">
@@ -83,7 +83,36 @@
             </div>
         </div>
     </div>
+</div> {% endcomment %}
+<div class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">Number of Orders</h5>
+                    <p class="card-text" style="font-size: 2rem;">{{ total_orders }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Total Order Amount</h5>
+                    <p class="card-text" style="font-size: 2rem;">₹{{ total_order_amount }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Total Discount</h5>
+                    <p class="card-text" style="font-size: 2rem;">₹{{ total_discount }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
     
             <!-- Table Section -->
             <div class="table-responsive">
@@ -127,7 +156,7 @@
         </div>
     </div>
     
-    <div class="pagination-area mt-30 mb-50">
+    {% comment %} <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">
                 <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -138,7 +167,7 @@
                 <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
             </ul>
         </nav>
-    </div>
+    </div> {% endcomment %}
 </section> <!-- content-main end// -->
 <script>
     document.getElementById('filter-weekly').addEventListener('click', function() {

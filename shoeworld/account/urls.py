@@ -11,5 +11,9 @@ urlpatterns = [
     path('resend_otp/',views.resend_otp,name='resend_otp'),
     path('single_product/<int:pk>/',views.single_product,name='single_product'),
     path('shop/',views.shop,name='shop'),
+    path('password-reset/', views.password_reset_request, name='password_reset'),
+    path('password-reset-done/', views.password_reset_done, name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    path('reset/done/', views.password_reset_complete, name='password_reset_complete'),
 
 ]

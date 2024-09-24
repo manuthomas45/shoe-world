@@ -213,22 +213,21 @@ def add_to_wishlist(request):
 @login_required(login_url='/user_login/')
 def wishlist(request):
     wishlists = Wishlist.objects.filter(user=request.user)
+    
     return render(request, 'userdashboard/wishlist.html', {'wishlists': wishlists})
 
 
  
     
-    
 @login_required(login_url='/user_login/')
-def delete_wishlist_item(request,pk):
+def delete_wishlist_item(request, pk):
     if request.method == 'POST':
         wishlist_item = get_object_or_404(Wishlist, id=pk, user=request.user)
-        print(wishlist_item)
         wishlist_item.delete()
-
         return redirect('userdash:wishlist') 
     else:
         return redirect('userdash:wishlist')  
+
     
     
     
