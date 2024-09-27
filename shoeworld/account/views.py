@@ -21,6 +21,8 @@ from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -164,7 +166,7 @@ def user_home(request):
     products=Products.objects.all()
     return render(request,'userside/index.html',{'products':products})
 
-
+@login_required(login_url='/user_login/')
 def single_product(request,pk):
     product=get_object_or_404(Products,pk=pk)
     image=ProductImages.objects.filter(product=product)
@@ -176,7 +178,7 @@ def single_product(request,pk):
     return render(request,'userside/single_product.html',{'products':product,'images':image,'category':category,'brand':brand,'variants':variants,'reviews':reviews})
 
 
-
+@login_required(login_url='/user_login/')
 def shop(request):
     search_query = request.GET.get('search', '')
     
@@ -290,3 +292,8 @@ def password_reset_confirm(request, uidb64, token):
 
 def password_reset_complete(request):
     return render(request, 'userside/password_reset_complete.html')
+
+
+
+# def custom_404_view(request, exception):
+#     return render(request, '', status=404)

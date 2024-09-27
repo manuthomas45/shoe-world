@@ -56,98 +56,6 @@ def adminpanel(request):
     return render(request,'adminside/index.html')
 
 
-# @admin_required
-# def admin_dashboard(request):
-#     # Total order amount
-#     total_order_amount = OrderMain.objects.filter(order_status="Delivered").aggregate(total=Sum('total_amount'))['total'] or 0
-    
-#     # Total order count
-#     total_order_count = OrderMain.objects.filter(order_status="Delivered").aggregate(total_orders=Count('id'))['total_orders'] or 0
-    
-#     # Total discount
-#     total_discount = OrderMain.objects.filter(order_status="Delivered").aggregate(
-#         total_discount=Sum(F('discount_amount'))
-#     )['total_discount'] or 0
-    
-#     # Monthly earnings
-#     now = timezone.now()
-#     current_year = now.year
-#     current_month = now.month
-    
-#     monthly_earnings = OrderMain.objects.filter(
-#         order_status="Delivered",
-#         date__year=current_year,
-#         date__month=current_month
-#     ).aggregate(monthly_total=Sum('total_amount'))['monthly_total'] or 0
-
-#     # Data for the order chart
-#     monthly_order_count = OrderMain.objects.filter(
-#         order_status="Delivered"
-#     ).annotate(
-#         month=ExtractMonth('date'),
-#         year=ExtractYear('date')
-#     ).values('year', 'month').annotate(count=Count('id')).order_by('year', 'month')
-
-#     labels = [f'{entry["month"]}/{entry["year"]}' for entry in monthly_order_count]
-#     data = [entry['count'] for entry in monthly_order_count]
-
-#     # User registration data
-#     user_registrations = User.objects.annotate(
-#         month=TruncMonth('date_joined')
-#     ).values('month').annotate(count=Count('id')).order_by('month')
-
-#     user_labels = [entry['month'].strftime('%b %Y') for entry in user_registrations]
-#     user_data = [entry['count'] for entry in user_registrations]
-
-#     context = {
-#         'total_order_amount': total_order_amount,
-#         'total_order_count': total_order_count,
-#         'total_discount': total_discount,
-#         'monthly_earnings': monthly_earnings,
-#         'labels': json.dumps(labels),
-#         'data': json.dumps(data),
-#         'user_labels': json.dumps(user_labels),
-#         'user_data': json.dumps(user_data)
-#     }
-
-#     return render(request, 'adminside/index.html', context)
-
-
-@admin_required
-def admin_dashboard(request):
-    # ... (keep your existing code for other statistics)
-    total_order_amount = OrderMain.objects.filter(order_status="Delivered").aggregate(total=Sum('total_amount'))['total'] or 0
-
-    # Data for the order chart
-    monthly_order_sum = OrderMain.objects.filter(
-        order_status="Delivered"
-    ).annotate(
-        month=TruncMonth('date')
-    ).values('month').annotate(
-        total=Sum('total_amount')
-    ).order_by('month')
-
-    order_labels = [entry['month'].strftime('%b %Y') for entry in monthly_order_sum]
-    order_data = [float(entry['total']) for entry in monthly_order_sum]
-
-    # User registration data
-    user_registrations = User.objects.annotate(
-        month=TruncMonth('date_joined')
-    ).values('month').annotate(count=Count('id')).order_by('month')
-
-    user_labels = [entry['month'].strftime('%b %Y') for entry in user_registrations]
-    user_data = [entry['count'] for entry in user_registrations]
-
-    context = {
-        'total_order_amount': total_order_amount,
-        # ... (keep your existing context data)
-        'order_labels': json.dumps(order_labels),
-        'order_data': json.dumps(order_data),
-        'user_labels': json.dumps(user_labels),
-        'user_data': json.dumps(user_data)
-    }
-
-    return render(request, 'adminside/index.html', context)
 
 @admin_required
 def admin_logout(request):
@@ -283,3 +191,62 @@ def best_selling_brands(request):
         'best_selling_brands': best_selling_brands
     })
 
+
+
+@admin_required
+def admin_dashboard(request):
+    # ... (keep your existing code for other statistics)
+    total_order_amount = OrderMain.objects.filter(order_status="Delivered").aggregate(total=Sum('total_amount'))['total'] or 0
+  
+    # Total order count
+    total_order_count = OrderMain.objects.filter(order_status="Delivered").aggregate(total_orders=Count('id'))['total_orders'] or 0
+    
+    # Total discount
+    total_discount = OrderMain.objects.filter(order_status="Delivered").aggregate(
+        total_discount=Sum(F('discount_amount'))
+    )['total_discount'] or 0
+    
+    # Monthly earnings
+    now = timezone.now()
+    current_year = now.year
+    current_month = now.month
+    
+    monthly_earnings = OrderMain.objects.filter(
+        order_status="Delivered",
+        date__year=current_year,
+        date__month=current_month
+    ).aggregate(monthly_total=Sum('total_amount'))['monthly_total'] or 0
+
+    # Data for the order chart
+    monthly_order_sum = OrderMain.objects.filter(
+        order_status="Delivered"
+    ).annotate(
+        month=TruncMonth('date')
+    ).values('month').annotate(
+        total=Sum('total_amount')
+    ).order_by('month')
+
+    order_labels = [entry['month'].strftime('%b %Y') for entry in monthly_order_sum]
+    order_data = [float(entry['total']) for entry in monthly_order_sum]
+
+    # User registration data
+    user_registrations = User.objects.annotate(
+        month=TruncMonth('date_joined')
+    ).values('month').annotate(count=Count('id')).order_by('month')
+
+    user_labels = [entry['month'].strftime('%b %Y') for entry in user_registrations]
+    user_data = [entry['count'] for entry in user_registrations]
+
+    context = {
+        'total_order_amount': total_order_amount,
+        'total_order_count': total_order_count,
+        'total_discount': total_discount,
+        'monthly_earnings': monthly_earnings,
+        # ... (keep your existing context data)
+        'order_labels': json.dumps(order_labels),
+        'order_data': json.dumps(order_data),
+        'user_labels': json.dumps(user_labels),
+        'user_data': json.dumps(user_data)
+    }
+
+    return render(request, 'adminside/index.html', context)

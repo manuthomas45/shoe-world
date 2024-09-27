@@ -302,7 +302,7 @@ def place_order(request):
                     return redirect('order:confirmation')
                 else:
                         messages.error(request, 'Not Enough Money In Wallet')
-                        return redirect('cart:cart_checkout')
+                        return redirect('cart:checkout')
             except Wallet.DoesNotExist:
                 messages.error(request, 'Wallet Does Not Exist')
                 return redirect('cart:checkout')

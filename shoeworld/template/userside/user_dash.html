@@ -199,7 +199,7 @@
                                                             </span>
                                                         </td> 
                                                         <td class="text-nowrap">
-                                                            {% if order.order_status != "Canceled" and order.order_status != "Delivered" and order.order_status != "Pending" %}
+                                                            {% if order.order_status != "Canceled" and order.order_status != "Delivered" and order.order_status != "Returned" and order.order_status != "Pending" %}
                                                                 <form id="cancel-form-{{ order.id }}" method="post" action="{% url 'order:cancel_order' order.id %}">
                                                                     {% csrf_token %}
                                                                     <button type="button" class="btn btn-danger btn-sm" onclick="confirmCancel('{{ order.id }}')">Cancel Order</button>
@@ -222,7 +222,7 @@
                                                             </button>
                                                             {% if order.order_status == 'Delivered' %}
                                                                 <form method="get" action="{% url 'userdash:download_invoice' order_id=order.id %}">
-                                                                    <button type="submit">Download Invoice</button>
+                                                                    <button class="btn-warning" type="submit">Download Invoice</button>
                                                                 </form>
                                                             {% endif %}
                                                             

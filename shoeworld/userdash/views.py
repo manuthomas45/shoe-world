@@ -73,7 +73,7 @@ def user_dashboard(request):
     except Wallet.DoesNotExist:
         pass
     
-    transactions = Transaction.objects.filter(wallet=wallets)
+    transactions = Transaction.objects.filter(wallet=wallets).order_by("-id")
     return render(request, 'userside/user_dash.html', {
         'user_address': user_address,
         'user_data': user_data,
