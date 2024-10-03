@@ -128,8 +128,16 @@ def place_order(request):
                 cart_item.variant.save()
             
             cart_items.delete()
+            main_order = OrderMain.objects.get(id=order_main.id)
+            if coupon_code:
+                coupon = Coupon.objects.get(coupon_code=coupon_code)
+                coupon = UserCoupon.objects.create(
+                    user=request.user,
+                    coupon = coupon,
+                    used = True,
+                    order = main_order
+                )
             request.session.pop('applied_coupon', None)
-            # request.session['order_placed'] = True  
             return redirect('order:confirmation')
         elif payment_option == "Online Payment":
             
@@ -297,6 +305,15 @@ def place_order(request):
                     wallet.save()
                     
                     cart_items.delete()
+                    main_order = OrderMain.objects.get(id=order_main.id)
+                    if coupon_code:
+                        coupon = Coupon.objects.get(coupon_code=coupon_code)
+                        coupon = UserCoupon.objects.create(
+                            user=request.user,
+                            coupon = coupon,
+                            used = True,
+                            order = main_order
+                        )
                     request.session.pop('applied_coupon', None)
                     
                     messages.success(request, 'Order Success')
@@ -401,6 +418,15 @@ def complete_order(request):
             cart_item.variant.save()
             
             cart_items.delete()
+            main_order = OrderMain.objects.get(id=order_main.id)
+            if coupon_code:
+                coupon = Coupon.objects.get(coupon_code=coupon_code)
+                coupon = UserCoupon.objects.create(
+                    user=request.user,
+                    coupon = coupon,
+                    used = True,
+                    order = main_order
+                )
             request.session.pop('applied_coupon', None)   
         current_user = request.user
         cart = Cart.objects.get(user=current_user)

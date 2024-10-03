@@ -189,5 +189,31 @@
         <!-- Main Script -->
         <script src="{% static 'adminside/assets/js/main.js' %}" type="text/javascript"></script>
         <script src="{% static 'adminside/assets/js/custom-chart.js' %}" type="text/javascript"></script>
+        {% comment %} <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                {% if messages %}
+                    const messages = [
+                        {% for message in messages %}
+                            {
+                                level: "{{ message.tags }}",
+                                text: "{{ message }}"
+                            },
+                        {% endfor %}
+                    ];
+                    messages.forEach(message => {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-right',
+                            icon: message.level === 'success' ? 'success' : 'error',
+                            title: message.text,
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    });
+                {% endif %}
+            });
+        </script> {% endcomment %}
+    
+    
     </body>
 </html>

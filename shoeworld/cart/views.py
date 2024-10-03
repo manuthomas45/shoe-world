@@ -9,7 +9,7 @@ import json
 from cart.models import *
 from userdash.models import *
 from django.contrib import messages
-from coupon.models import Coupon
+from coupon.models import Coupon,UserCoupon
 from django.views.decorators.cache import cache_control
 
 
@@ -111,9 +111,11 @@ def cart_checkout(request):
           
         return redirect('order:confirmation')     
     cart = Cart.objects.get(user=request.user)
-    cart_items = CartItem.objects.filter(cart=cart, is_active=True) 
-    coupons = Coupon.objects.filter(status=True, expiry_date__gte=timezone.now()) 
-   
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True)         
+    available_coupons = Coupon.objects.filter(status=True, expiry_date__gte=timezone.now()) 
+    used_coupons = UserCoupon.objects.filter(user=request.user).values_list('coupon', flat=True) 
+    coupons = available_coupons.exclude(id__in=used_coupons)
+
 
     for cart_item in cart_items:
         if not cart_item.variant.variant_status:

@@ -23,9 +23,12 @@ def create_coupon(request):
         discount = request.POST.get('discount')
         expiry_date = request.POST.get('expiry_date')
         coupon_code = request.POST.get('generated_coupon_code')  
-        status = request.POST.get('status') == 'on'  
-        
-        
+        status = request.POST.get('status')
+        if status:
+            status = status
+        else:
+            status=False
+    
         errors = []
         try:
             minimum_amount = int(minimum_amount) if minimum_amount else None
@@ -106,7 +109,12 @@ def coupon_delete(request, pk):
 def edit_coupon(request, pk):
     coupon = get_object_or_404(Coupon, id=pk)
     today = timezone.now().date()  
+    
+    return render(request, 'coupon/editcoupon.html', {'coupon': coupon, 'today': today})
 
+def edit_coupon_post(request,pk):
+    coupon = get_object_or_404(Coupon, id=pk)
+    today = timezone.now().date()
     if request.method == 'POST':
         errors = []
 
@@ -116,7 +124,8 @@ def edit_coupon(request, pk):
         discount = request.POST.get('discount', '')
         expiry_date = request.POST.get('expiry_date', '')
         coupon_code = request.POST.get('generated_coupon_code', '')
-        status = request.POST.get('status') == 'on'
+        status = request.POST.get('status') 
+
         
         try:
             minimum_amount = int(minimum_amount) if minimum_amount else None
@@ -130,29 +139,30 @@ def edit_coupon(request, pk):
         elif Coupon.objects.filter(coupon_code__iexact=coupon_code).exclude(id=pk).exists():
             errors.append('A Coupon with this Code Already Exists')
 
-        if minimum_amount is not None:
+        if minimum_amount:
             if minimum_amount < 20001:
                 errors.append('Minimum Amount Should be greater Than ₹20000')
             elif minimum_amount > 1000000:
                 errors.append('Minimum Amount Should Be Less Than ₹1000000')
         else:
-            pass
+            errors.append('Minimum Amount is Required')
 
-        if maximum_amount is not None:
+        if maximum_amount :
             if maximum_amount < 3000:
                 errors.append('Maximum Amount Should be Greater than ₹3000')
             elif maximum_amount > 10000:
                 errors.append('Maximum Amount Only Add Up To ₹10000')
         else:
-            pass
+            errors.append('Maximum Amount is Required')
 
-        if discount is not None:
+        if discount :
             if discount < 1:
                 errors.append('Discount should be greater than zero')
             elif discount > 65:
                 errors.append('Discount Can Only Be Up to 65%')
         else:
-            pass
+            errors.append('Discount is Required')
+            
 
 
         if errors:
@@ -166,16 +176,16 @@ def edit_coupon(request, pk):
         coupon.discount = discount
         coupon.expiry_date = expiry_date
         coupon.coupon_code = coupon_code
-        coupon.status = status
+        if status:
+            coupon.status = status
+        else:
+            coupon.status=False
         coupon.save()
 
         messages.success(request, 'Coupon Updated Successfully')
         return redirect('coupon:coupon_list')
-
+    
     return render(request, 'coupon/editcoupon.html', {'coupon': coupon, 'today': today})
-
-
-
 
 # ----------------------------------------------user
 
