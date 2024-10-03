@@ -26,9 +26,7 @@ from django.utils import timezone
 
 @login_required(login_url="/user_login/")
 def place_order(request):
-    if request.session.get('order_placed'):
-          
-        return redirect('order:confirmation')
+  
     if request.method == 'POST':
         current_user = request.user
         cart = Cart.objects.get(user=current_user)
@@ -38,6 +36,11 @@ def place_order(request):
         selected_address_id = request.POST.get('selected_address')
         payment_option = request.POST.get('payment_option')
         cart_total = sum(item.total() for item in cart_items)
+        
+        if not cart_items.exists():
+                # messages.error(request, "No valid items found in cart. Please try again.")
+                return redirect('account:shop')
+        
         if not selected_address_id:
             messages.error(request, 'Select Address To Continue')
             return redirect('cart:checkout') 
@@ -126,26 +129,26 @@ def place_order(request):
             
             cart_items.delete()
             request.session.pop('applied_coupon', None)
-            request.session['order_placed'] = True  
+            # request.session['order_placed'] = True  
             return redirect('order:confirmation')
         elif payment_option == "Online Payment":
             
             coupon_code = request.session.get('applied_coupon', None)
-            # discount = 0
+            discount = 0
             final_amount = cart_total
-            # discount_amount = 0
-            # if coupon_code:
-            #     try:
-            #         coupon = Coupon.objects.get(coupon_code=coupon_code)
-            #         discount = coupon.maximum_amount
-            #         coupon_name = coupon.coupon_name
-            #         discount_amount = (cart_total * discount / 100)
-            #         if discount_amount > discount:
-            #             discount_amount = discount
-            #         final_amount-= discount_amount
-            #         # order_amount=final_amount
-            #     except Coupon.DoesNotExist:
-            #         pass
+            discount_amount = 0
+            if coupon_code:
+                try:
+                    coupon = Coupon.objects.get(coupon_code=coupon_code)
+                    discount = coupon.maximum_amount
+                    coupon_name = coupon.coupon_name
+                    discount_amount = (cart_total * discount / 100)
+                    if discount_amount > discount:
+                        discount_amount = discount
+                    final_amount-= discount_amount
+                    order_amount=final_amount
+                except Coupon.DoesNotExist:
+                    pass
             
             client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
             order_amount = int(final_amount * 100)  
@@ -320,9 +323,7 @@ def complete_order(request):
     cart_items = CartItem.objects.filter(cart=cart, is_active=True)
     cart_total = sum(item.total() for item in cart_items)
     selected_address_id = request.POST.get('selected_address')
-    print(selected_address_id)
     address = UserAddress.objects.get(id=selected_address_id, user=current_user)
-    print(address)
     current_date_time = datetime.now()
     formatted_date_time = current_date_time.strftime("%H%m%S%Y")
     unique = get_random_string(length=4, allowed_chars='1234567890')
@@ -750,3 +751,4 @@ def return_approval(request, pk):
             return redirect('order:admin_return_orders')
 
     return redirect('order:admin_return_orders')
+

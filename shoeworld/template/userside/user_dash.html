@@ -136,7 +136,6 @@
                                     <div class="card-body text-center" style="padding-top:7px"> 
                                         <div class="mb-3"> 
                                         </div> 
-                                       
                                         <a href="#" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#editProfileModal" 
@@ -199,6 +198,20 @@
                                                             </span>
                                                         </td> 
                                                         <td class="text-nowrap">
+                                                            {% comment %} {% if order.order_status == 'Awaiting Payment' %}
+                                                            <form method="post" action="{% url 'order:process_payment' order.id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-info btn-sm no-outline" style="color:white; height: 25px; width: 100px; padding: 0; text-align: center; display: flex; align-items: center; justify-content: center;">
+                                                                    Pay Now
+                                                                </button>
+                                                            </form>
+                                                             {% endcomment %}
+                                                            {% comment %} <button class="btn btn-info btn-sm " type="button" style="color:white;">
+                                                            <a href="{% url 'orders:process_payment' order.order_id %}"  style="color:white;">
+                                                                Pay Now
+                                                            </a></button> {% endcomment %}
+                                                           
+                                                            
                                                             {% if order.order_status != "Canceled" and order.order_status != "Delivered" and order.order_status != "Returned" and order.order_status != "Pending" %}
                                                                 <form id="cancel-form-{{ order.id }}" method="post" action="{% url 'order:cancel_order' order.id %}">
                                                                     {% csrf_token %}

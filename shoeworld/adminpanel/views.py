@@ -34,7 +34,7 @@ def admin_login(request):
 
 @admin_required
 def user_list(request):
-    users = User.objects.filter(is_admin=False).order_by('id')
+    users = User.objects.filter(is_admin=False).order_by('-id')
     return render(request, 'adminside/user_list.html', {'users': users})
 
 @admin_required

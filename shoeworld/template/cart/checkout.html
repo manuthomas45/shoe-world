@@ -125,7 +125,7 @@
                     <div class="col-12">
                         <h3>Select Delivery Address</h3>
                     </div>
-                    <div class="row address-selection" style="padding-top:20px;">
+                    <!-- <div class="row address-selection" style="padding-top:20px;">
                         {% if user_address %}
                         {% for address in user_address %}
                         <div class="col-md-6 mb-3">
@@ -148,8 +148,33 @@
                         {% else %}
                         <h3>Please create Address</h3>
                         {% endif %}
+                    </div> -->
+                    <div class="row address-selection" style="padding-top:20px;">
+                        {% if user_address %}
+                            {% for address in user_address %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="selected_address" id="address_{{ address.id }}" value="{{ address.id }}" 
+                                                   {% if forloop.first %}checked{% endif %}>
+                                            <label class="form-check-label" for="address_{{ address.id }}">
+                                                <strong>{{ address.name }}</strong><br>
+                                                {{ address.house_name }},<br> {{ address.street_name }}<br>
+                                                {{ address.district }}, {{ address.state }} <br>{{ address.pin_number }}<br>
+                                                {{ address.country }}<br>
+                                                Phone: {{ address.phone_number }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <h3>Please create Address</h3>
+                        {% endif %}
                     </div>
-
+                    
                     <div class="col-12 form-group mt-3">
                         <a class="btn btn-warning btn-block" href="{% url 'userdash:create_address' %}">Add New Address</a>
                     </div>

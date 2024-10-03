@@ -247,7 +247,7 @@
             // Add summary at the top
             XLSX.utils.sheet_add_aoa(ws, [
                 ["Sales Report"],
-                ["Number of Orders", "{{ total_orders }}"],
+                ["Number of Orders", "{{ total_order }}"],
                 ["Total Order Amount", "₹{{ total_order_amount }}"],
                 ["Total Discount", "₹{{ total_discount }}"]
             ], { origin: 'A1' });

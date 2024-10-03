@@ -74,7 +74,7 @@ def cart_list(request):
             'cart_total': cart_total, 
         })
     except Exception as e:
-        print(f"Error: {e}")  
+        # print(f"Error: {e}")  
         return render(request, 'cart/cart.html')
 
 
@@ -128,7 +128,9 @@ def cart_checkout(request):
             messages.error(request, 'Product unavailable')
             return redirect('cart:cart')
     
-    
+    if not cart_items.exists():
+            # messages.error(request, "No valid items found in cart. Please try again.")
+            return redirect('account:shop')
     cart_total = sum(item.total() for item in cart_items)
     
    

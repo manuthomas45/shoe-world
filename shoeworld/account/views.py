@@ -294,6 +294,3 @@ def password_reset_complete(request):
     return render(request, 'userside/password_reset_complete.html')
 
 
-
-# def custom_404_view(request, exception):
-#     return render(request, '', status=404)

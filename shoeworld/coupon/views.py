@@ -136,7 +136,7 @@ def edit_coupon(request, pk):
             elif minimum_amount > 1000000:
                 errors.append('Minimum Amount Should Be Less Than ₹1000000')
         else:
-            errors.append('Minimum Amount is required')
+            pass
 
         if maximum_amount is not None:
             if maximum_amount < 3000:
@@ -144,7 +144,7 @@ def edit_coupon(request, pk):
             elif maximum_amount > 10000:
                 errors.append('Maximum Amount Only Add Up To ₹10000')
         else:
-            errors.append('Maximum Amount is required')
+            pass
 
         if discount is not None:
             if discount < 1:
@@ -152,7 +152,7 @@ def edit_coupon(request, pk):
             elif discount > 65:
                 errors.append('Discount Can Only Be Up to 65%')
         else:
-            errors.append('Discount is required')
+            pass
 
 
         if errors:

@@ -183,7 +183,6 @@ def add_to_wishlist(request):
         try:
             data = json.loads(request.body) 
             variant_id = data.get('variant_id') 
-            print("Variant ID:", variant_id) 
 
             if not variant_id:
                 return JsonResponse({'status': 'error', 'message': 'No variant ID provided.'})
