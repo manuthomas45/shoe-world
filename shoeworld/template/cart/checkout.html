@@ -73,12 +73,15 @@
 </style> {% endcomment %}
 <!-- Meta tags and other head elements -->
  <!-- Correct Bootstrap CDN URLs -->
+ <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU6zF4mgN4GILq7H/if/lmpKpdaQQ8Nxld82" crossorigin="anonymous">
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha384-oBqDVmMz2kvwC9j/g6ZfmxC3ew5G8EvccQcH6ANL81wdN+2kaF6s8xQUW/1MwldV" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyCI8jzB+n7aeYz7nZh35i6qD+t+KA7IG8qFkB8GyuMZ68+5NSAz6I" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" integrity="sha384-cn7l7gDp0eyCI8jzB+n7aeYz7nZh35i6qD+t+KA7IG8qFkB8GyuMZ68+5NSAz6I" crossorigin="anonymous"></script>
+
 <section class="banner-area organic-breadcrumb" style="height:120px;">
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
@@ -176,9 +179,13 @@
                     </div>
                     
                     <div class="col-12 form-group mt-3">
-                        <a class="btn btn-warning btn-block" href="{% url 'userdash:create_address' %}">Add New Address</a>
+                        {% comment %} <button type="button" class="btn btn-warning w-100 hover-up" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            Add New Address
+                        </button>                            {% endcomment %}
+                         <a class="btn btn-warning btn-block" href="{% url 'userdash:add_address' request.user.id %}">Add New Address</a>
                     </div>
                 </div>
+               
                 {% comment %} <div class="col-lg-4">
                     <!-- Order Summary Section -->
                     <div class="order_box">
@@ -381,6 +388,8 @@
     </div>
   </div>
 
+  
+</section>
 <!-- Bootstrap JavaScript and Popper.js -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
@@ -388,7 +397,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" defer></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.1/js/bootstrap.bundle.min.js" defer></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

@@ -67,6 +67,11 @@
                                                 <strong>Size:</strong> {{ item.variant.size }}<br>
                                                 <strong>Price:</strong> ₹{{ item.product.price }}<br>
                                                 <strong>Stock:</strong> {{ item.variant.variant_stock }}<br>
+                                                {% if not item.product.is_active %}
+                                                <li>
+                                                    <span class="text-danger font-weight-bold">Unavailable</span>
+                                                </li>
+                                                {% endif %}
                                                 
                                             </p>
                                         </div>
@@ -106,7 +111,7 @@
                             <tr>
                                 <td>
                                     <div class="checkout_btn_inner d-flex align-items-end">
-                                        <a class="gray_btn" href="#">Continue Shopping</a>
+                                        {% comment %} <a class="gray_btn" href="#">Continue Shopping</a> {% endcomment %}
                                         <a class="primary-btn" href="{% url 'cart:checkout' %}">Proceed to checkout</a>
                                     </div>
                                 </td>

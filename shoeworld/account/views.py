@@ -177,7 +177,6 @@ def single_product(request,pk):
 
     return render(request,'userside/single_product.html',{'products':product,'images':image,'category':category,'brand':brand,'variants':variants,'reviews':reviews})
 
-
 @login_required(login_url='/user_login/')
 def shop(request):
     search_query = request.GET.get('search', '')

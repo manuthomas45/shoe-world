@@ -28,6 +28,8 @@ def add_to_cart(request):
 
         variant = ProductVariant.objects.get(id=variant_id)
         product =Products.objects.get(id=variant.product.id)
+
+        
         
         cart, created = Cart.objects.get_or_create(user=request.user)
 

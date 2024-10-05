@@ -43,7 +43,7 @@ class OrderSub(models.Model):
     price = models.FloatField(null=False, default=0)
     quantity = models.IntegerField(null=False, default=0)
     is_active = models.BooleanField(default=True)
-    status = models.CharField(max_length=10, null=True,blank=True)
+    status = models.CharField(max_length=20, null=True,blank=True)
     
     def total_cost(self):
         return self.quantity * self.variant.product.offer_price
@@ -63,6 +63,6 @@ class ReturnRequest(models.Model):
     order_main = models.ForeignKey(OrderMain, on_delete=models.CASCADE, null=True,blank=True)
     order_sub = models.ForeignKey(OrderSub, on_delete=models.CASCADE, null=True, blank=True)
     reason = models.TextField()
-    status = models.CharField(max_length=10, choices=RETURN_STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=50, choices=RETURN_STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)    

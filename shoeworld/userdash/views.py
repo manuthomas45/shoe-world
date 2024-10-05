@@ -333,3 +333,55 @@ def download_invoice(request, order_id):
     except Exception as e:
         return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
 
+
+@login_required(login_url='/user_login/')
+def add_address(request,pk):
+    if request.method == 'POST':
+        # Get form data
+        name = request.POST.get('name')
+        house_name = request.POST.get('house_name')
+        street_name = request.POST.get('street_name')
+        pin_number = request.POST.get('pin_number')
+        district = request.POST.get('district')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+        phone_number = request.POST.get('phone_number')
+        status = request.POST.get('status') == 'on'  # Convert checkbox to boolean
+
+        # Check if all fields are filled
+        if not all([name, house_name, street_name, pin_number, district, state, country, phone_number]):
+            messages.error(request, "All fields are required.")
+            return render(request, 'userdashboard/add_address.html', {'users': request.user})
+
+        # Validate PIN number
+        if not pin_number.isdigit() or len(pin_number) != 6:
+            messages.error(request, "Please enter a valid 6-digit PIN number.")
+            return render(request, 'userdashboard/add_address.html', {'users': request.user})
+
+        # Validate phone number
+        if not phone_number.isdigit() or len(phone_number) not in [10, 12]:
+            messages.error(request, "Please enter a valid phone number with 10 or 12 digits.")
+            return render(request, 'userdashboard/add_address.html', {'users': request.user})
+
+        try:
+            # Create the address record
+            address = UserAddress.objects.create(
+                user=request.user,
+                name=name,
+                house_name=house_name,
+                street_name=street_name,
+                pin_number=pin_number,
+                district=district,
+                state=state,
+                country=country,
+                phone_number=phone_number,
+                status=status,
+            )
+            messages.success(request, 'Address Added Successfully')
+            return redirect('order:place_order')
+        except Exception as e:
+            messages.error(request, f"An error occurred while saving the address: {str(e)}")
+            return render(request, 'userdashboard/add_address.html', {'users': request.user})
+
+    # If it's a GET request, just render the form
+    return render(request, 'userdashboard/add_address.html', {'users': request.user})

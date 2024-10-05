@@ -5,6 +5,7 @@ app_name = 'userdash'
 urlpatterns = [
    path('dashboard/',user_dashboard,name="dashboard"),
    path('create_address/',create_address,name='create_address'),
+   path('add_address/<int:pk>/',add_address,name='add_address'),
    path('edit_address/<int:pk>/',edit_address,name='edit_address'),
    path('delete/<int:pk>/',delete_address,name='delete_address'),
    path('edit_details/<int:pk>/',edit_details,name='edit_details'),

@@ -7,7 +7,7 @@ from .models import *
 from cart.models import *
 from userdash.models import *
 from userdash.models import UserAddress
-from order.models import OrderAddress,OrderMain,OrderSub
+from order.models import OrderAddress,OrderMain,OrderSub,ReturnRequest
 from utils.admindecorator import admin_required
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
@@ -22,6 +22,8 @@ from wallet.models import *
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import cache_control
 from django.utils import timezone
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 
 
 @login_required(login_url="/user_login/")
@@ -713,68 +715,199 @@ def admin_return_orders(request):
 
 
 
+# @admin_required
+# def return_approval(request, pk):
+#     if request.method == "POST":
+#         return_request = get_object_or_404(ReturnRequest, id=pk)
+#         action = request.POST.get('action')
 
-def return_approval(request, pk):
-    if request.method == "POST":
-        return_request = get_object_or_404(ReturnRequest, id=pk)
-        action = request.POST.get('action')
+#         if action == 'Approve':
+#             return_request.status = "Approved"
+#             return_request.save()
 
-        if action == 'Approve':
-            return_request.status = "Approved"
-            return_request.save()
+#             refund_amount = Decimal('0.00')
 
-            refund_amount = Decimal('0.00')
+#             order = return_request.order_main
+#             active_items = order.ordersub_set.filter(is_active=True)
 
+#             for item in active_items:
+#                 item_total_cost = Decimal(str(item.final_total_cost()))
+#                 order_total_amount = Decimal(str(order.total_amount))
+#                 order_discount_amount = Decimal(str(order.discount_amount))
+
+#                 item_discount_amount = (order_discount_amount * item_total_cost) / order_total_amount
+#                 item_refund_amount = item_total_cost - item_discount_amount
+
+#                 refund_amount += item_refund_amount
+#                 item.is_active = False
+#                 item.status = "Returned"
+#                 item.save()
+
+#             order.order_status = 'Returned'
+#             order.is_active = False
+#             order.final_amount -= refund_amount
+#             order.save()
+
+#             # Handle refund to wallet if applicable
+#             if refund_amount > 0 and return_request.order_main.payment_status:
+#                 wallet, created = Wallet.objects.get_or_create(user=return_request.order_main.user)
+#                 wallet.balance += refund_amount
+#                 wallet.updated_at = timezone.now()
+#                 wallet.save()
+
+#                 Transaction.objects.create(
+#                     wallet=wallet,
+#                     amount=float(refund_amount),
+#                     description=f"Refund for {'order' if return_request.order_sub is None else 'item'} {return_request.order_main.order_id if return_request.order_sub is None else return_request.order_sub.variant.product.product_name}",
+#                     transaction_type='Credited'
+#                 )
+
+#                 messages.success(request, 'Return request approved and amount credited to the user\'s wallet.')
+#                 return redirect('order:admin_return_orders')
+#             else:
+#                 messages.success(request, 'Return request approved. No payment was made or payment status is not confirmed.')
+#                 return redirect('order:admin_return_orders')
+
+#         elif action == "Reject":
+#             return_request.status = "Rejected"          
+#             return_request.save()
+#             messages.success(request, 'Return request rejected.')
+#             return redirect('order:admin_return_orders')
+
+#         else:
+#             messages.error(request, 'Invalid action.')
+#             return redirect('order:admin_return_orders')
+
+#     return redirect('order:admin_return_orders')
+
+
+
+@admin_required 
+def admin_return_approval(request, pk):
+    return_request = get_object_or_404(ReturnRequest, id=pk) 
+    action = request.POST.get('action')
+
+    if action == 'Approve':
+        return_request.status = "Approved"
+        return_request.save()
+        
+        refund_amount = Decimal('0.00') 
+        
+        if return_request.order_sub:  # Handling individual items being returned
+            item = return_request.order_sub 
+            main_order = item.main_order
+            item_total_cost = Decimal(str(item.final_total_cost()))
+            order_total_amount = Decimal(str(main_order.total_amount))
+            order_discount_amount = Decimal(str(main_order.discount_amount))
+            
+            item_discount_amount = (order_discount_amount * item_total_cost) / order_total_amount
+            refund_amount = item_total_cost - item_discount_amount
+            
+            # Update the status of the returned item
+            item.is_active = False
+            item.status = "Returned"
+            item.save()
+            
+            # Update the main order amount
             order = return_request.order_main
-            active_items = order.ordersub_set.filter(is_active=True)
+            order.final_amount -= refund_amount
+            order.save()
+            
+            # Check if all items in the main order have been returned
+            all_canceled = not main_order.ordersub_set.filter(is_active=True).exists() 
+            
+            if all_canceled: 
+                main_order.order_status = 'Returned'
+                main_order.save()
 
+        else:  # Handling return of the entire order
+            order = return_request.order_main 
+            active_items = order.ordersub_set.filter(is_active=True)
+            
             for item in active_items:
                 item_total_cost = Decimal(str(item.final_total_cost()))
                 order_total_amount = Decimal(str(order.total_amount))
                 order_discount_amount = Decimal(str(order.discount_amount))
-
+                
                 item_discount_amount = (order_discount_amount * item_total_cost) / order_total_amount
                 item_refund_amount = item_total_cost - item_discount_amount
-
+                
                 refund_amount += item_refund_amount
                 item.is_active = False
                 item.status = "Returned"
                 item.save()
-
+            
+            # Update the main order's status and amount
             order.order_status = 'Returned'
             order.is_active = False
             order.final_amount -= refund_amount
             order.save()
 
-            # Handle refund to wallet if applicable
-            if refund_amount > 0 and return_request.order_main.payment_status:
-                wallet, created = Wallet.objects.get_or_create(user=return_request.order_main.user)
-                wallet.balance += refund_amount
-                wallet.updated_at = timezone.now()
-                wallet.save()
-
-                Transaction.objects.create(
-                    wallet=wallet,
-                    amount=float(refund_amount),
-                    description=f"Refund for {'order' if return_request.order_sub is None else 'item'} {return_request.order_main.order_id if return_request.order_sub is None else return_request.order_sub.variant.product.product_name}",
-                    transaction_type='Credited'
-                )
-
-                messages.success(request, 'Return request approved and amount credited to the user\'s wallet.')
-                return redirect('order:admin_return_orders')
-            else:
-                messages.success(request, 'Return request approved. No payment was made or payment status is not confirmed.')
-                return redirect('order:admin_return_orders')
-
-        elif action == "Reject":
-            return_request.status = "Rejected"          
-            return_request.save()
-            messages.success(request, 'Return request rejected.')
+        # Process the refund if a valid payment was made
+        if refund_amount > 0 and return_request.order_main.payment_status:
+            wallet, created = Wallet.objects.get_or_create(user=return_request.order_main.user)
+            wallet.balance += refund_amount
+            wallet.updated_at = timezone.now()
+            wallet.save()
+            
+            # Log the transaction in the user's wallet
+            Transaction.objects.create(
+                wallet=wallet,
+                amount=float(refund_amount),
+                description=f"Refund for {'order' if return_request.order_sub is None else 'item'} {return_request.order_main.order_id if return_request.order_sub is None else return_request.order_sub.variant.product.product_name}",
+                transaction_type='Credited'
+            )
+            
+            messages.success(request, 'Return request approved and amount credited to the user\'s wallet.')
             return redirect('order:admin_return_orders')
-
         else:
-            messages.error(request, 'Invalid action.')
+            messages.success(request, 'Return request approved. No payment was made or payment status is not confirmed.')
             return redirect('order:admin_return_orders')
 
-    return redirect('order:admin_return_orders')
+    elif action == "Reject":
+        return_request.status = "Rejected"
+        if return_request.order_sub:
+            return_request.order_sub.status = "Return Rejected"
+            return_request.order_sub.save()
+        return_request.save()
+        
+        messages.success(request, 'Return request rejected.')
+        return redirect('order:admin_return_orders')
 
+    else:
+        messages.error(request, 'Invalid action.')
+        return redirect('order:admin_return_orders')
+# ------------
+
+@login_required(login_url="/user_login/")
+@require_POST  # To ensure this view is only accessible via POST request
+def individual_return(request, pk):
+    order_sub = get_object_or_404(OrderSub, id=pk, user=request.user)
+
+    if not order_sub.is_active: 
+        messages.error(request, 'Order item is already Returned.')
+        return redirect('userdash:dashboard')
+
+    if order_sub.main_order.order_status in ['Pending', 'Confirmed', 'Shipped', 'Canceled']: 
+        messages.error(request, 'Order cannot be Returned at this stage.')
+        return redirect('userdash:dashboard')
+
+    reason = request.POST.get('reason', '').strip()
+
+    if not reason:
+        messages.error(request, 'A reason must be provided for returns.')
+        return redirect('userdash:dashboard')
+
+    # Create the return request
+    ReturnRequest.objects.create(
+        order_main=order_sub.main_order,
+        order_sub=order_sub,
+        reason=reason
+    )
+
+    # Update the order item status
+    order_sub.status = "Return Requested"
+    order_sub.save()
+
+    messages.success(request, "Please wait for the admin's approval.")
+    return redirect('userdash:dashboard')
