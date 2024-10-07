@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
+            background-color: #fff4e6; /* Light orange background */
             margin: 30px;
             padding: 0;
             display: flex;
@@ -16,15 +17,29 @@
             color: #333;
         }
 
-        .register-card {
+        .register-container {
+            display: flex;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
             width: 100%;
-            max-width: 450px;
-            margin: 20px;
-            padding: 45px;
         }
+
+        .register-card {
+            padding: 45px;
+            width: 60%;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px; /* Add space between the input fields */
+        }
+        
+        .form-group.half-width {
+            width: 48%; /* Adjust to make room for the gap */
+        }
+        
 
         .heading_s1 h3 {
             color: #333;
@@ -116,88 +131,137 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 576px) {
-            .register-card {
-                padding: 20px;
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group.half-width {
+            width: 48%;
+        }
+
+        .register-image {
+            width: 40%;
+            background-color: #f9c89a;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-image img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                flex-direction: column;
             }
 
-            .heading_s1 h3 {
-                font-size: 1.25em;
+            .register-card {
+                width: 100%;
+            }
+
+            .register-image {
+                width: 100%;
+                border-radius: 0;
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="register-card">
-    <div class="heading_s1">
-        <h3>Create an Account</h3>
-    </div>
-    
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {{ message.tags }}">
-                    {{ message }}
+<div class="register-container">
+    <div class="register-card">
+        <div class="heading_s1">
+            <h3>Create an Account</h3>
+        </div>
+        
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <!-- First and Last Name in one row -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    {% for error in form.first_name.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.first_name.label_tag }}
-            {{ form.first_name }}
-            {% for error in form.first_name.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group">
-            {{ form.last_name.label_tag }}
-            {{ form.last_name }}
-            {% for error in form.last_name.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group">
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            {% for error in form.email.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group">
-            {{ form.phone_number.label_tag }}
-            {{ form.phone_number }}
-            {% for error in form.phone_number.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group">
-            {{ form.password.label_tag }}
-            {{ form.password }}
-            {% for error in form.password.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group">
-            {{ form.confirm_password.label_tag }}
-            {{ form.confirm_password }}
-            {% for error in form.confirm_password.errors %}
-                <div class="form-errors">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="form-group center">
-            <button type="submit" class="btn">Register</button>
-        </div>
-    </form>
+                <div class="form-group half-width">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    {% for error in form.last_name.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Email and Phone Number in one row -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group half-width">
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                    {% for error in form.phone_number.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Password and Confirm Password in one row -->
+            <div class="form-row">
+                <div class="form-group half-width">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                    {% for error in form.password.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group half-width">
+                    {{ form.confirm_password.label_tag }}
+                    {{ form.confirm_password }}
+                    {% for error in form.confirm_password.errors %}
+                        <div class="form-errors">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-    <div class="divider-text-center">
-        <span></span>
+            <div class="form-group center">
+                <button type="submit" class="btn">Register</button>
+            </div>
+        </form>
+
+        <div class="divider-text-center">
+            <span></span>
+        </div>
+
+        <div class="text-muted">Already have an account? <a href="{% url 'account:user_login' %}">Login now</a></div>
     </div>
 
-    <div class="text-muted">Already have an account? <a href="{% url 'account:user_login' %}">Login now</a></div> 
+    <!-- Image section on the right -->
+    <div class="register-image">
+        <img src="{% static 'userside/assets/img/register.png' %}" alt="Registration Image">
+    </div>
 </div>
 
 </body>

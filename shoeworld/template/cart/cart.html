@@ -109,13 +109,14 @@
                                 <td><h5 id="cartSubTotal">₹{{cart_total}}</h5></td>
                             </tr>
                             <tr>
-                                <td>
-                                    <div class="checkout_btn_inner d-flex align-items-end">
-                                        {% comment %} <a class="gray_btn" href="#">Continue Shopping</a> {% endcomment %}
-                                        <a class="primary-btn" href="{% url 'cart:checkout' %}">Proceed to checkout</a>
+                                <td colspan="4">
+                                    <div class="checkout_btn_inner d-flex">
+                                        <a class="primary-btn ml-auto" href="{% url 'cart:checkout' %}">Proceed to checkout</a>
                                     </div>
                                 </td>
                             </tr>
+                            
+                            
                         </tbody>
                         {% else %}
                         <div class="">

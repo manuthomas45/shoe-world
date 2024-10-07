@@ -13,15 +13,30 @@
         padding-top:100px;
     }
 </style>
-<section class="login_box_area section_gap" style="margin-top:30px ;">
+<section class="banner-area organic-breadcrumb" style="height:180px;">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1></h1>
+                <nav class="d-flex ">
+                  {% comment %} <a href="">Home<span class="lnr lnr-arrow-right"></span></a> {% endcomment %}
+                    {% comment %} <a href="">Cart</a>  {% endcomment %}
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="login_box_area section_gap" style="margin-top:-90px ;">
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
                 <div class="login_box_img">
-                    <img class="img-fluid" src="{% static 'userside/assets/img/login.jpg' %}" alt="">
+                    <img class="img-fluid" src="{% static 'userside/assets/img/login1.png' %}" alt="">
                     <div class="hover">
                         <h4>New to our website?</h4>
-                        <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                        <p>"Create an account to explore our website. Only then can you purchase our products."
+
+                        </p>
                         <a class="primary-btn" href="{% url 'account:register' %}">Create an Account</a>
                     </div>
                 </div>

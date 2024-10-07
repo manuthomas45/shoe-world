@@ -164,9 +164,9 @@ def resend_otp(request):
 
 def user_home(request):
     products=Products.objects.all()
-    return render(request,'userside/index.html',{'products':products})
+    brands=Brand.objects.all()
+    return render(request,'userside/index.html',{'products':products,'brands':brands})
 
-@login_required(login_url='/user_login/')
 def single_product(request,pk):
     product=get_object_or_404(Products,pk=pk)
     image=ProductImages.objects.filter(product=product)
@@ -177,7 +177,6 @@ def single_product(request,pk):
 
     return render(request,'userside/single_product.html',{'products':product,'images':image,'category':category,'brand':brand,'variants':variants,'reviews':reviews})
 
-@login_required(login_url='/user_login/')
 def shop(request):
     search_query = request.GET.get('search', '')
     

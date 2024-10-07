@@ -41,8 +41,8 @@ def add_to_cart(request):
         )
 
         if not item_created:
-            if cart_item.quantity>=5:
-                return JsonResponse({'success': False, 'message': 'You cannot add more than 5 items'}, status=404)
+            if cart_item.quantity >= 5:
+                return JsonResponse({'Error': True, 'message': 'You cannot add more than 5 items'}, status=400)
             else:              
                 cart_item.quantity += quantity
                 cart_item.save()
@@ -60,8 +60,7 @@ def add_to_cart(request):
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @login_required(login_url='/user_login/')
 def cart_list(request):
-    if request.session.get('order_placed'): 
-        del request.session['order_placed']
+    
 
     try:
         cart = get_object_or_404(Cart, user=request.user)
@@ -109,9 +108,7 @@ def cart_item_delete(request,pk):
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @login_required(login_url='/user_login/')
 def cart_checkout(request):
-    if request.session.get('order_placed'):
-          
-        return redirect('order:confirmation')     
+        
     cart = Cart.objects.get(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart, is_active=True)         
     available_coupons = Coupon.objects.filter(status=True, expiry_date__gte=timezone.now()) 

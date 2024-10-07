@@ -232,7 +232,7 @@
 	<section class="product_description_area">
 		<div class="container">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
-				<li class="nav-item">
+				{% comment %} <li class="nav-item">
 					<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
 				</li>
 				<li class="nav-item">
@@ -242,10 +242,10 @@
 				<li class="nav-item">
 					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
 					 aria-selected="false">Comments</a>
-				</li>
+				</li> {% endcomment %}
 				<li class="nav-item">
-					<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-					 aria-selected="false">Reviews</a>
+					<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+					 aria-selected="false"><span style="font-weight: bold;">Reviews<span></a>
 				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
@@ -426,15 +426,15 @@
 						<div class="col-lg-6">
 							<div class="row total_rate">
 								<div class="col-6">
-									<div class="box_total">
+									{% comment %} <div class="box_total">
 										<h5>Overall</h5>
 										<h4>4.0</h4>
 										<h6>(03 Reviews)</h6>
-									</div>
+									</div> {% endcomment %}
 								</div>
 								<div class="col-6">
 									<div class="rating_list">
-										<h3>Based on 3 Reviews</h3>
+										{% comment %} <h3>Based on 3 Reviews</h3>
 										<ul class="list">
 											<li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
 													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
@@ -446,7 +446,7 @@
 													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
 											<li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
 													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-										</ul>
+										</ul> {% endcomment %}
 									</div>
 								</div>
 							</div>
@@ -983,10 +983,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         position: 'top-right'
                     });
                 } else {
+					
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: data.message,
+						timer: 3000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-right'
                     });
                 }
             })
@@ -1031,56 +1036,80 @@ document.addEventListener('DOMContentLoaded', function() {
  </script>
 
 <script>
-	document.querySelector('.icon_btn').addEventListener('click', function (e) {
-		e.preventDefault(); // Prevent default anchor click behavior
-	
-		// Get the selected variant ID from the hidden input field
-		var variantId = document.getElementById('selectedVariantInput').value;
-	
-		// Send the variant ID to the Django view using fetch
-		fetch("{% url 'userdash:add_wishlist' %}", {
-			method: 'POST',
-			headers: {
-				'X-CSRFToken': csrfToken, // Include the CSRF token for security
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ variant_id: variantId }) // Send the variant ID as a JSON object
-		})
-		.then(response => response.json()) // Parse the JSON response
-		.then(data => {
-			if (data.status === 'success') {
+	document.addEventListener('DOMContentLoaded', function() {
+		document.querySelector('.icon_btn').addEventListener('click', function (e) {
+			e.preventDefault(); // Prevent default anchor click behavior
+		
+			// Get the selected variant ID from the hidden input field
+			var variantId = document.getElementById('selectedVariantInput').value;
+		
+			// Send the variant ID to the Django view using fetch
+			fetch("{% url 'userdash:add_wishlist' %}", {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrfToken, // Include the CSRF token for security
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ variant_id: variantId }) // Send the variant ID as a JSON object
+			})
+			.then(response => response.json()) // Parse the JSON response
+			.then(data => {
+				let icon, title;
+				if (data.status === 'success') {
+					icon = 'success';
+					title = data.message;
+				} else if (data.status === 'exists') {
+					icon = 'info';
+					title = data.message;
+				} else {
+					icon = 'error';
+					title = 'There was an error adding the item to your wishlist.';
+				}
+				
 				Swal.fire({
+					toast: true,
 					position: 'top-right',
-					icon: 'success',
-					title: data.message,
+					icon: icon,
+					title: title,
 					showConfirmButton: false,
-					timer: 3000 // Duration in milliseconds
+					timer: 3000
 				});
-			} else if (data.status === 'exists') {
+			})
+			.catch(error => {
+				console.error('Error:', error); // Log any errors to the console
 				Swal.fire({
+					toast: true,
 					position: 'top-right',
-					icon: 'info',
-					title: data.message,
-					showConfirmButton: false, // Set the width of the toast (default is auto)
-					timer: 2000 // Duration in milliseconds
-				});
-			} else {
-				Swal.fire({
-					position: 'top-end',
 					icon: 'error',
-					title: 'There was an error adding the item to your wishlist.',
+					title: 'Something went wrong. Please try again later.',
 					showConfirmButton: false,
-					timer: 2000 // Duration in milliseconds
+					timer: 3000
 				});
-			}
-			
-		})
-		.catch(error => {
-			console.error('Error:', error); // Log any errors to the console
-			Swal.fire('Error', 'Something went wrong. Please try again later.', 'error'); // Show a general error alert
+			});
 		});
-	});
 	
+		// Display Django messages using SweetAlert2
+		{% if messages %}
+			const messages = [
+				{% for message in messages %}
+					{
+						level: "{{ message.tags }}",
+						text: "{{ message|escapejs }}"
+					},
+				{% endfor %}
+			];
+			messages.forEach(message => {
+				Swal.fire({
+					toast: true,
+					position: 'top-right',
+					icon: message.level === 'success' ? 'success' : 'error',
+					title: message.text,
+					showConfirmButton: false,
+					timer: 3000
+				});
+			});
+		{% endif %}
+	});
 </script>
 {% endblock content %}
 

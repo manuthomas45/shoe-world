@@ -232,10 +232,10 @@
                                                             
                                                             <button class="btn btn-info btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ order.id }}" aria-expanded="false" aria-controls="orderDetails{{ order.id }}">
                                                                 Details
-                                                            </button>
+                                                            </button >
                                                             {% if order.order_status == 'Delivered' %}
                                                                 <form method="get" action="{% url 'userdash:download_invoice' order_id=order.id %}">
-                                                                    <button class="btn-warning" type="submit">Download Invoice</button>
+                                                                    <button class="btn-warning btm-sm mt-2" type="submit">Download Invoice</button>
                                                                 </form>
                                                             {% endif %}
                                                             
@@ -284,14 +284,14 @@
                                                                                     {% endif %}
                                                                                 </span>
                                                                             {% endif %}
-                                                                            <h5>Delivery Address</h5>
+                                                                            {% comment %} <h5>Delivery Address</h5>
                                                                             <p>
                                                                                 <strong>Name:</strong> {{ item.main_order.address.name }}<br>
                                                                                 <strong>House Name:</strong> {{ item.main_order.address.house_name }}<br>
                                                                                 <strong>District:</strong> {{ item.main_order.address.district }}<br>
                                                                                 <strong>State:</strong> {{ item.main_order.address.state }}<br>
                                                                                 <strong>Pin Number:</strong> {{ item.main_order.address.pin_number }}
-                                                                            </p>
+                                                                            </p> {% endcomment %}
                                                                         </div>
                                                                     </div>  
                                                                     
@@ -482,7 +482,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="lnr lnr-cross" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" action="{% url 'userdash:edit_details' user.id %}">

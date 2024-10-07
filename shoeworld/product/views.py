@@ -197,7 +197,7 @@ def variant_status(request, pk):
     return redirect('product:product_variant', pk=product_id)
 
         # ---------------------------------review-----------------------------------
-
+@login_required(login_url="/user_login/")
 def review_create(request, pk):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -205,6 +205,13 @@ def review_create(request, pk):
             product = get_object_or_404(Products, pk=pk)
             rating = request.POST.get('rating')
             comment = request.POST.get('comment')
+            
+            if comment=="":
+                messages.error(request, 'Please write comment.')
+                return redirect('account:single_product', pk=pk)
+            if rating is None or rating == '0':
+                messages.error(request, 'Please select a star rating.')
+                return redirect('account:single_product', pk=pk)
 
             # Creating and saving the review
             review = Review.objects.create(
@@ -226,8 +233,7 @@ def review_create(request, pk):
 
 
 
-
-
+@login_required(login_url="/user_login/")
 def delete_review(request, pk):
     # Fetch the review by primary key
     review = get_object_or_404(Review, id=pk)
@@ -241,6 +247,7 @@ def delete_review(request, pk):
             return redirect('account:single_product', pk=product_id)
         else:
             # Redirect to product details if the user is not authorized
+            messages.error(request, 'You can not delete this review.')
             return redirect('account:single_product', pk=review.product.id)
     
     # Redirect if the request method is not POST

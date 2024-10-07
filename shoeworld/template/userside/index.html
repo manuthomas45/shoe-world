@@ -14,17 +14,22 @@
 						<div class="row single-slide align-items-center d-flex">
 							<div class="col-lg-5 col-md-6">
 								<div class="banner-content">
-									<h1>Nike New <br>Collection!</h1>
-									<p>THis is brototyp</p>
+									<br>
+									<br>
+									<br>
+									<br>
+									<h1>Curated Shoe<br>Collection!</h1>
+									<br>
+									<p style="">At Shoe World, we believe in the perfect blend of style and quality. Our curated collection of branded footwear brings you the best in comfort and fashion. Step into luxury, step into Shoe World – where every shoe tells a story of excellence.</p>
 									<div class="add-bag d-flex align-items-center">
-										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
-										<span class="add-text text-uppercase">Add to Bag</span>
+										<a href="{% url 'account:shop' %}" class="primary-btn">Shop Now</a>
+
 									</div>
 								</div>
 							</div>
 							<div class="col-lg-7">
 								<div class="banner-img">
-									<img class="img-fluid" src="{% static 'userside/assets/img/banner/banner-img.png' %}" alt="">
+									<img class="img-fluid" src="{% static 'userside/assets/img/banner/banner-img.png' %}" alt="oo">
 								</div>
 							</div>
 						</div>
@@ -164,10 +169,8 @@
 				<div class="row justify-content-center">
 					<div class="col-lg-6 text-center">
 						<div class="section-title">
-							<h1>Latest Products</h1>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-								dolore
-								magna aliqua.</p>
+							<h1>Premium Products</h1>
+							<p>Experience the difference of premium footwear. Our collection features meticulously crafted shoes that exude elegance and sophistication.</p>
 						</div>
 					</div>
 				</div>
@@ -732,7 +735,8 @@
 					<div class="row clock_sec clockdiv" id="clockdiv">
 						<div class="col-lg-12">
 							<h1>Exclusive Hot Deal Ends Soon!</h1>
-							<p>Who are in extremely love with eco friendly system.</p>
+							<br>
+							{% comment %} <p>Who are in extremely love with eco friendly system.</p> {% endcomment %}
 						</div>
 						<div class="col-lg-12">
 							<div class="row clock-wrap">
@@ -755,12 +759,29 @@
 							</div>
 						</div>
 					</div>
-					<a href="" class="primary-btn">Shop Now</a>
+					<a href="{% url 'account:shop' %}" class="primary-btn">Shop Now</a>
 				</div>
 				<div class="col-lg-6 no-padding exclusive-right">
-					<div class="active-exclusive-product-slider">
+					<div class="active-exclusive">
 						<!-- single exclusive carousel -->
-						<div class="single-exclusive-slider">
+						<div class="single-exclusive">
+							<img class="img-fluid" src="https://imgs.search.brave.com/NIxNQ6uxVRYXeStz6JV6DAyQMwV0dFW1u4rAoOwSPao/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE2/MjA3OTQzNDE0OTEt/NzZiZTZlZWI2OTQ2/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZpeGxp/Yj1yYi00LjAuMyZp/eGlkPU0zd3hNakEz/ZkRCOE1IeHpaV0Z5/WTJoOE5IeDhZV1Jw/WkdGemZHVnVmREI4/ZkRCOGZId3c.jpeg" alt="" style="height: 600px; width: auto;">
+							<br><br>
+							<div class="product-details">
+								<div class="price">
+									<h6>₹11500.00</h6>
+									<h6 class="l-through">₹12100.00</h6>
+								</div>
+								<h4>addidas New Hammer sole<br>
+									for Sports person</h4>
+								<div class="add-bag d-flex align-items-center justify-content-center">
+									<a href="{% url 'account:shop' %}" class="primary-btn">Shop Now</a>
+
+								</div>
+							</div>
+						</div>
+						<!-- single exclusive carousel -->
+						{% comment %} <div class="single-exclusive">
 							<img class="img-fluid" src="{% static 'userside/assets/img/product/e-p1.png' %}" alt="">
 							<div class="product-details">
 								<div class="price">
@@ -774,23 +795,7 @@
 									<span class="add-text text-uppercase">Add to Bag</span>
 								</div>
 							</div>
-						</div>
-						<!-- single exclusive carousel -->
-						<div class="single-exclusive-slider">
-							<img class="img-fluid" src="{% static 'userside/assets/img/product/e-p1.png' %}" alt="">
-							<div class="product-details">
-								<div class="price">
-									<h6>$150.00</h6>
-									<h6 class="l-through">$210.00</h6>
-								</div>
-								<h4>addidas New Hammer sole
-									for Sports person</h4>
-								<div class="add-bag d-flex align-items-center justify-content-center">
-									<a class="add-btn" href=""><span class="ti-bag"></span></a>
-									<span class="add-text text-uppercase">Add to Bag</span>
-								</div>
-							</div>
-						</div>
+						</div> {% endcomment %}
 					</div>
 				</div>
 			</div>
@@ -799,31 +804,23 @@
 	<!-- End exclusive deal Area -->
 
 	<!-- Start brand Area -->
-	<section class="brand-area section_gap">
+	{% comment %} <section class="brand-area section_gap">
 		<div class="container">
-			<div class="row">
-				<a class="col single-img" href="#">
-					<img class="img-fluid d-block mx-auto" src="{% static 'userside/assets/img/brand/1.png' %}" alt="">
-				</a>
-				<a class="col single-img" href="#">
-					<img class="img-fluid d-block mx-auto" src="{% static 'userside/assets/img/brand/2.png' %}" alt="">
-				</a>
-				<a class="col single-img" href="#">
-					<img class="img-fluid d-block mx-auto" src="{% static 'userside/assets/img/brand/3.png' %}" alt="">
-				</a>
-				<a class="col single-img" href="#">
-					<img class="img-fluid d-block mx-auto" src="{% static 'userside/assets/img/brand/4.png' %}" alt="">
-				</a>
-				<a class="col single-img" href="#">
-					<img class="img-fluid d-block mx-auto" src="{% static 'userside/assets/img/brand/5.png' %}" alt="">
-				</a>
+			<div class="row justify-content-center">
+				{% for brand in brands %}
+					<a class="col-auto single-img d-flex justify-content-center" href="#">
+						<img class="img-fluid" src="{{ brand.brand_image.url }}" alt="" style="height:100px; width:100px; object-fit: contain; margin-bottom: 10px;">
+					</a>
+				{% endfor %}
 			</div>
 		</div>
-	</section>
+	</section> {% endcomment %}
+	
+	
 	<!-- End brand Area -->
 
 	<!-- Start related-product Area -->
-	<section class="related-product-area section_gap_bottom">
+	{% comment %} <section class="related-product-area section_gap_bottom">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-6 text-center">
@@ -956,6 +953,6 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</section> {% endcomment %}
 	<!-- End related-product Area -->
 {% endblock %}

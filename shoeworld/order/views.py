@@ -320,7 +320,6 @@ def place_order(request):
                     
                     messages.success(request, 'Order Success')
                     
-                    request.session['order_placed'] = True  
                     return redirect('order:confirmation')
                 else:
                         messages.error(request, 'Not Enough Money In Wallet')
@@ -353,8 +352,7 @@ def complete_order(request):
     unique = get_random_string(length=2, allowed_chars='1234567890')
     payment_id = unique + user + formatted_date_time
 
-    if request.session.get('order_placed'):
-        return redirect('order:confirmation')
+    
     if request.method == 'POST':
         coupon_code = request.session.get('applied_coupon', None)
         discount = 0
@@ -455,7 +453,6 @@ def complete_order(request):
             except razorpay.errors.SignatureVerificationError:
                 messages.error(request, "Payment verification failed. Please try again.")
                 return redirect('cart:checkout')  
-        request.session['order_placed'] = True           
         return redirect('order:confirmation')
 
     return redirect('cart:checkout')

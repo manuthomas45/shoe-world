@@ -31,7 +31,7 @@
                 <h5 class="mb-0">Start Date:</h5>
             </div>
             <div class="col-auto">
-                <input type="date" name="start_date" class="form-control" placeholder="Start date">
+                <input type="date" name="start_date" class="form-control" placeholder="Start date" id="start_date">
             </div>
             <div class="col-auto d-flex align-items-center">
                 <h5 class="mb-0">End Date:</h5>
@@ -169,6 +169,13 @@
         </nav>
     </div> {% endcomment %}
 </section> <!-- content-main end// -->
+<script>
+    // Set today's date as the maximum date
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
+        document.getElementById('start_date').setAttribute('max', today);  // Set max attribute
+    });
+</script>
 <script>
     document.getElementById('filter-weekly').addEventListener('click', function() {
         window.location.href = "{% url 'sales_report' %}?filter=weekly";
