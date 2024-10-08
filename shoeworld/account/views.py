@@ -167,6 +167,9 @@ def user_home(request):
     brands=Brand.objects.all()
     return render(request,'userside/index.html',{'products':products,'brands':brands})
 
+def about_us(request):
+    return render(request,"userside/about.html")
+
 def single_product(request,pk):
     product=get_object_or_404(Products,pk=pk)
     image=ProductImages.objects.filter(product=product)

@@ -1,137 +1,139 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Premium Shoe Haven</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 50px 20px;
-        }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: -15px;
-        }
-        .col-6 {
-            flex: 0 0 50%;
-            padding: 15px;
-        }
-        .col-4 {
-            flex: 0 0 33.333%;
-            padding: 15px;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 15px;
-        }
-        h2 {
-            color: #ff8c00;
-            margin-bottom: 20px;
-        }
-        .mb-30 {
-            margin-bottom: 30px;
-        }
-        .mb-50 {
-            margin-bottom: 50px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .featured-card {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            height: 100%;
-        }
-        .featured-card img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        ul li:before {
-            content: "✓ ";
-            color: #ff8c00;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-        @media (max-width: 768px) {
-            .col-6, .col-4 {
-                flex: 0 0 100%;
-            }
-        }
-    </style>
-</head>
-<body>
+{% extends "userside/base.html" %}
+{% load static %}
+{% block title %}product details{% endblock title%}
+{% block content %}
+<section class="banner-area organic-breadcrumb" style="height:180px;">
     <div class="container">
-        <div class="row mb-50">
-            <div class="col-6">
-                <img src="/api/placeholder/600/400" alt="About Premium Shoe Haven">
-            </div>
-            <div class="col-6">
-                <h2>Welcome to Premium Shoe Haven</h2>
-                <p class="mb-30">At Premium Shoe Haven, we're passionate about helping you step out in style and comfort. As a premier online destination for footwear, we offer a curated selection of high-quality shoes designed to meet your unique needs and personal style.</p>
-                <p class="mb-30">Our journey began with a simple idea: to make luxury footwear accessible to everyone. Today, we're proud to offer a wide range of products, from elegant dress shoes to comfortable casual wear and high-performance athletic footwear, all at competitive prices.</p>
-            </div>
-        </div>
-        
-        <section class="text-center mb-50">
-            <h2>What Sets Us Apart</h2>
-            <div class="row">
-                <div class="col-4">
-                    <div class="featured-card">
-                        <img src="/api/placeholder/60/60" alt="Quality Products">
-                        <h4>Quality Assurance</h4>
-                        <p>We partner with leading brands and manufacturers to ensure every pair meets our high standards of craftsmanship and comfort.</p>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="featured-card">
-                        <img src="/api/placeholder/60/60" alt="Expert Guidance">
-                        <h4>Expert Guidance</h4>
-                        <p>Our team of fashion experts is always ready to provide personalized advice to help you find your perfect fit and style.</p>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="featured-card">
-                        <img src="/api/placeholder/60/60" alt="Great Value">
-                        <h4>Exceptional Value</h4>
-                        <p>Enjoy competitive prices on luxury footwear, along with exclusive offers and promotions for our valued customers.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <div class="row mb-50">
-            <div class="col-6">
-                <h2>Our Commitment to You</h2>
-                <p class="mb-30">At Premium Shoe Haven, customer satisfaction is our top priority. We're committed to:</p>
-                <ul class="mb-30">
-                    <li>Offering a diverse range of footwear to suit all tastes and occasions</li>
-                    <li>Providing expert advice and support throughout your shopping journey</li>
-                    <li>Ensuring fast, secure shipping and hassle-free returns</li>
-                    <li>Continuously improving our products and services based on your feedback</li>
-                </ul>
-            </div>
-            <div class="col-6">
-                <img src="/api/placeholder/600/400" alt="Our Commitment">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1></h1>
+                <nav class="d-flex ">
+                  
+                </nav>
             </div>
         </div>
     </div>
-</body>
-</html>
+</section>
+
+    <style>
+        
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--dark-orange);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        h1, h2, h3 {
+            color: #E65100;
+        }
+        .hero {
+            background-image: url('{% static 'userside/assets/img/about.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .hero-content {
+            background-color: rgba(255, 152, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        .content-section {
+            flex-basis: calc(50% - 20px);
+            margin-bottom: 2rem;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .image-gallery {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        .gallery-item {
+            flex-basis: calc(33% - 10px);
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        @media (max-width: 768px) {
+            .content-section, .gallery-item {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+
+    
+    <div class="hero">
+        <div class="hero-content">
+            <h2 style="color:black;">Step into Style, Walk in Comfort</h2>
+            <p>Discover the perfect pair for every journey at Shoe World</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>About Us</h2>
+        <div class="content">
+            <div class="content-section">
+                <h3>Our Story</h3>
+                <p>Founded in 1999, Shoe World began as a small family-owned store with a big dream: to help people find the perfect pair of shoes for every occasion. Today, we've grown into a leading online destination for shoe enthusiasts, offering an extensive collection of footwear for men, women, and children.</p>
+            </div>
+            <div class="content-section">
+                <h3>Our Mission</h3>
+                <p>At Shoe World, our mission is to provide high-quality, stylish, and comfortable footwear that empowers our customers to put their best foot forward. We believe that the right pair of shoes can boost confidence, inspire adventure, and enhance everyday experiences.</p>
+            </div>
+            <div class="content-section">
+                <h3>What Sets Us Apart</h3>
+                <ul>
+                    <li>Curated Selection: We handpick every shoe in our collection to ensure quality and style.</li>
+                    <li>Customer-First Approach: Your satisfaction is our top priority. We offer hassle-free returns and dedicated customer support.</li>
+                    <li>Affordable Luxury: We believe everyone deserves to walk in comfort and style, without breaking the bank.</li>
+                    <li>Expertise: Our team of shoe experts is always ready to help you find the perfect fit.</li>
+                </ul>
+            </div>
+            <div class="content-section">
+                <h3>Our Commitment</h3>
+                <p>We're committed to providing an exceptional shopping experience, from browsing our wide selection to the moment you slip on your new favorite pair of shoes. At Shoe World, we're not just selling shoes; we're helping you put your best foot forward in every step of your journey.</p>
+            </div>
+        </div>
+
+        <h3>Featured Collections</h3>
+        <div class="image-gallery">
+            <div class="gallery-item">
+                <img src="{% static 'userside/assets/img/product/p1.jpg' %}" alt="Athletic Shoes">
+            </div>
+            <div class="gallery-item">
+                    <img src="{% static 'userside/assets/img/product/p2.jpg' %}" alt="Casual Shoes">
+            </div>
+            <div class="gallery-item">
+                <img src="{% static 'userside/assets/img/product/p4.jpg' %}" alt="Formal Shoes">
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+
