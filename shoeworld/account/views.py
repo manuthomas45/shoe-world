@@ -199,9 +199,9 @@ def shop(request):
         products = products.filter(product_brand__id=selected_brand)
     
     if sort_option == 'low-high':
-        products = products.order_by('price')
+        products = products.order_by('offer_price')
     elif sort_option == 'high-low':
-        products = products.order_by('-price')
+        products = products.order_by('-offer_price')
     elif sort_option == 'a-z':
         products = products.order_by('product_name')
     elif sort_option == 'z-a':
