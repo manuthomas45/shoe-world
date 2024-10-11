@@ -239,13 +239,14 @@ def password_reset_request(request):
                     email_template_name = "userside/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'domain': 'https://shoe-world.shop',
+                        'domain': 'shoe-world.shop',  # Remove 'https://' here(old:localhost:8000)
                         'site_name': 'shoeworld',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,
                         'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
+                        'protocol': 'https',  # Set protocol to https(old :http)
                     }
+
                     email_content = render_to_string(email_template_name, c)
                     try:
                         send_mail(
