@@ -239,7 +239,7 @@ def password_reset_request(request):
                     email_template_name = "userside/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'domain': 'https://shoe-world.shop/',
+                        'domain': 'https://shoe-world.shop',
                         'site_name': 'shoeworld',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,
